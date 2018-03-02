@@ -8,76 +8,104 @@
 
 import UIKit
 import AVFoundation
-import Vision
 
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
+    // Real time camera capture session.
     var captureSession = AVCaptureSession()
+
+    // References to camera devices.
     var backCamera: AVCaptureDevice?
     var frontCamera: AVCaptureDevice?
     var currentCamera: AVCaptureDevice?
-    
-    var photoOutput: AVCapturePhotoOutput?
-    var orientation: AVCaptureVideoOrientation = .portrait
-    
+
+    // Context for using Core Image filters.
     let context = CIContext()
-    let shapeLayer = CAShapeLayer()
     
-    let faceDetection = VNDetectFaceRectanglesRequest()
-    let faceLandmarks = VNDetectFaceLandmarksRequest()
-    let faceLandmarksDetectionRequest = VNSequenceRequestHandler()
-    let faceDetectionRequest = VNSequenceRequestHandler()
-    
+    // Track orientation changes.
+    var orientation: AVCaptureVideoOrientation?
+
     var value: Float = 0
     
-
+    @IBAction func toggleCamera(_ sender: UIButton) {
+        switchCameraInput()
+    }
+    
     @IBAction func slider(_ sender: UISlider) {
         value = sender.value
     }
     
+    // Image view for filter image.
     @IBOutlet weak var filteredImage: UIImageView!
     
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupDevice()
+        setupDevice(useBackCamera: true)
         setupInputOutput()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        // Detect orientation changes.
         orientation = AVCaptureVideoOrientation(rawValue: UIApplication.shared.statusBarOrientation.rawValue)!
-        
-        shapeLayer.frame = view.frame
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+
+    // AVCaptureVideoDataOutputSampleBufferDelegate method
+    func captureOutput(_ output: AVCaptureOutput,
+                       didOutput sampleBuffer: CMSampleBuffer,
+                       from connection: AVCaptureConnection) {
+        
+        connection.videoOrientation = orientation!
+        
+        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+//        let cameraImage = CIImage(cvImageBuffer: pixelBuffer!).oriented(.upMirrored)
+
+        let cameraImage = CIImage(cvImageBuffer: pixelBuffer!)
+
+        
+        //        1
+        //        let comicEffect = CIFilter(name: "CIComicEffect")
+        //        comicEffect!.setValue(cameraImage, forKey: kCIInputImageKey)
+        //        let cgImage = self.context.createCGImage(comicEffect!.outputImage!, from: cameraImage.extent)!
         
         
-        shapeLayer.strokeColor = UIColor.red.cgColor
-        shapeLayer.lineWidth = 2.0
+        //        2
+        //        let CMYKHalftoneFilter = CIFilter(name: "CICMYKHalftone", withInputParameters: ["inputWidth" : self.value, "inputSharpness": 1])
+        //        CMYKHalftoneFilter!.setValue(cameraImage, forKey: kCIInputImageKey)
+        //        let cgImage = self.context.createCGImage(CMYKHalftoneFilter!.outputImage!, from: cameraImage.extent)!
         
-        //needs to filp coordinate system for Vision
-        shapeLayer.setAffineTransform(CGAffineTransform(scaleX: -1, y: -1))
+        //      3
+        //        let EdgesEffectFilter = CIFilter(name: "CIEdges", withInputParameters: ["inputIntensity" : self.value])
+        //        EdgesEffectFilter!.setValue(cameraImage, forKey: kCIInputImageKey)
+        //        let cgImage = self.context.createCGImage(EdgesEffectFilter!.outputImage!, from: cameraImage.extent)!
         
-        view.layer.addSublayer(shapeLayer)
         
         
-        if AVCaptureDevice.authorizationStatus(for: AVMediaType.video) != .authorized {
-            AVCaptureDevice.requestAccess(for: AVMediaType.video, completionHandler: { (authorized) in
-                DispatchQueue.main.async {
-                    if authorized {
-                        self.setupInputOutput()
-                    }
-                }
-            })
+        // 4
+        let cgImage = self.context.createCGImage(cameraImage, from: cameraImage.extent)!
+        
+        
+
+        DispatchQueue.main.async {
+            let filteredImage = UIImage(cgImage: cgImage)
+            self.filteredImage.image = filteredImage
         }
     }
-    
-    func setupDevice() {
+}
+
+
+
+
+///////////////////////////////////////////////////////////////
+// Helper methods to setup camera capture view.
+extension ViewController {
+   
+    func setupDevice(useBackCamera: Bool) {
         let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera],
                                                                       mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
         let devices = deviceDiscoverySession.devices
@@ -91,23 +119,27 @@ class ViewController: UIViewController {
             }
         }
         
-        currentCamera = frontCamera
+        currentCamera = useBackCamera ? backCamera : frontCamera
     }
     
     func setupInputOutput() {
         do {
             setupCorrectFramerate(currentCamera: currentCamera!)
+            
             let captureDeviceInput = try AVCaptureDeviceInput(device: currentCamera!)
             captureSession.sessionPreset = AVCaptureSession.Preset.hd1280x720
+            
             if captureSession.canAddInput(captureDeviceInput) {
                 captureSession.addInput(captureDeviceInput)
             }
-            let videoOutput = AVCaptureVideoDataOutput()
             
+            let videoOutput = AVCaptureVideoDataOutput()
             videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "sample buffer delegate", attributes: []))
+            
             if captureSession.canAddOutput(videoOutput) {
                 captureSession.addOutput(videoOutput)
             }
+            
             captureSession.startRunning()
         } catch {
             print(error)
@@ -135,172 +167,58 @@ class ViewController: UIViewController {
             }
         }
     }
-    
-}
 
-
-extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
-    
-    func captureOutput(_ output: AVCaptureOutput,
-                       didOutput sampleBuffer: CMSampleBuffer,
-                       from connection: AVCaptureConnection) {
-        
-        connection.videoOrientation = orientation
-        
-        let videoOutput = AVCaptureVideoDataOutput()
-        videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue.main)
-        
-        
-        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-        let cameraImage = CIImage(cvImageBuffer: pixelBuffer!).oriented(.upMirrored)
-
-//        1
-//        let comicEffect = CIFilter(name: "CIComicEffect")
-//        comicEffect!.setValue(cameraImage, forKey: kCIInputImageKey)
-//        let cgImage = self.context.createCGImage(comicEffect!.outputImage!, from: cameraImage.extent)!
-
-
-//        2
-//        let CMYKHalftoneFilter = CIFilter(name: "CICMYKHalftone", withInputParameters: ["inputWidth" : self.value, "inputSharpness": 1])
-//        CMYKHalftoneFilter!.setValue(cameraImage, forKey: kCIInputImageKey)
-//        let cgImage = self.context.createCGImage(CMYKHalftoneFilter!.outputImage!, from: cameraImage.extent)!
-
-//      3
-//        let EdgesEffectFilter = CIFilter(name: "CIEdges", withInputParameters: ["inputIntensity" : self.value])
-//        EdgesEffectFilter!.setValue(cameraImage, forKey: kCIInputImageKey)
-//        let cgImage = self.context.createCGImage(EdgesEffectFilter!.outputImage!, from: cameraImage.extent)!
-
-        
-        
-        // 4
-        let cgImage = self.context.createCGImage(cameraImage, from: cameraImage.extent)!
-        
-        
-        // FACE DETECT
-        detectFace(on: cameraImage.oriented(.upMirrored))
-        
-        
-        DispatchQueue.main.async {
-            let filteredImage = UIImage(cgImage: cgImage)
-            self.filteredImage.image = filteredImage
-        }
-        
-    }
-
-}
-
-
-extension ViewController {
-    
-    func detectFace(on image: CIImage) {
-        try? faceDetectionRequest.perform([faceDetection], on: image)
-        if let results = faceDetection.results as? [VNFaceObservation] {
-            if !results.isEmpty {
-                faceLandmarks.inputFaceObservations = results
-                detectLandmarks(on: image)
-                
-                DispatchQueue.main.async {
-                    self.shapeLayer.sublayers?.removeAll()
-                }
+    func cameraWithPosition(position: AVCaptureDevice.Position) -> AVCaptureDevice?
+    {
+        let discovery = AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera],
+                                                         mediaType: AVMediaType.video, position: .unspecified) as AVCaptureDevice.DiscoverySession
+        for device in discovery.devices as [AVCaptureDevice] {
+            if device.position == position {
+                return device
             }
         }
+        
+        return nil
     }
     
-    func detectLandmarks(on image: CIImage) {
-        try? faceLandmarksDetectionRequest.perform([faceLandmarks], on: image)
-        if let landmarksResults = faceLandmarks.results as? [VNFaceObservation] {
-            for observation in landmarksResults {
-                DispatchQueue.main.async {
-                    if let boundingBox = self.faceLandmarks.inputFaceObservations?.first?.boundingBox {
-                        let faceBoundingBox = boundingBox.scaled(to: self.view.bounds.size)
-                        
-                        //different types of landmarks
-                        let faceContour = observation.landmarks?.faceContour
-                        self.convertPointsForFace(faceContour, faceBoundingBox)
-                        
-                        let leftEye = observation.landmarks?.leftEye
-                        self.convertPointsForFace(leftEye, faceBoundingBox)
-                        
-                        let rightEye = observation.landmarks?.rightEye
-                        self.convertPointsForFace(rightEye, faceBoundingBox)
-                        
-                        let nose = observation.landmarks?.nose
-                        self.convertPointsForFace(nose, faceBoundingBox)
-                        
-                        let lips = observation.landmarks?.innerLips
-                        self.convertPointsForFace(lips, faceBoundingBox)
-                        
-                        let leftEyebrow = observation.landmarks?.leftEyebrow
-                        self.convertPointsForFace(leftEyebrow, faceBoundingBox)
-                        
-                        let rightEyebrow = observation.landmarks?.rightEyebrow
-                        self.convertPointsForFace(rightEyebrow, faceBoundingBox)
-                        
-                        let noseCrest = observation.landmarks?.noseCrest
-                        self.convertPointsForFace(noseCrest, faceBoundingBox)
-                        
-                        let outerLips = observation.landmarks?.outerLips
-                        self.convertPointsForFace(outerLips, faceBoundingBox)
-                    }
-                }
-            }
-        }
-    }
-    
-    func convertPointsForFace(_ landmark: VNFaceLandmarkRegion2D?, _ boundingBox: CGRect) {
-        if let points = landmark?.normalizedPoints {
-            let faceLandmarkPoints = points.map { (point: CGPoint) -> (x: CGFloat, y: CGFloat) in
-                let pointX = point.x * boundingBox.width + boundingBox.origin.x
-                let pointY = point.y * boundingBox.height + boundingBox.origin.y
-                
-                return (x: pointX, y: pointY)
+    func switchCameraInput() {
+        self.captureSession.beginConfiguration()
+        
+        var existingConnection:AVCaptureDeviceInput!
+        
+        for connection in self.captureSession.inputs {
+            let input = connection as! AVCaptureDeviceInput
+            if input.device.hasMediaType(AVMediaType.video) {
+                existingConnection = input
             }
             
-            DispatchQueue.main.async {
-                self.draw(points: faceLandmarkPoints)
+        }
+        
+        self.captureSession.removeInput(existingConnection)
+        
+        var newCamera:AVCaptureDevice!
+        if let oldCamera = existingConnection {
+            if oldCamera.device.position == .back {
+                newCamera = frontCamera
+            } else {
+                newCamera = backCamera
             }
         }
-    }
-    
-    func draw(points: [(x: CGFloat, y: CGFloat)]) {
-        let newLayer = CAShapeLayer()
-        newLayer.strokeColor = UIColor.red.cgColor
-        newLayer.lineWidth = 2.0
         
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: points[0].x, y: points[0].y))
-        for i in 0..<points.count - 1 {
-            let point = CGPoint(x: points[i].x, y: points[i].y)
-            path.addLine(to: point)
-            path.move(to: point)
-        }
-        path.addLine(to: CGPoint(x: points[0].x, y: points[0].y))
-        newLayer.path = path.cgPath
+        var newInput:AVCaptureDeviceInput!
         
-        shapeLayer.addSublayer(newLayer)
-    }
-    
-    
-    func convert(_ points: UnsafePointer<vector_float2>, with count: Int) -> [(x: CGFloat, y: CGFloat)] {
-        var convertedPoints = [(x: CGFloat, y: CGFloat)]()
-        for i in 0...count {
-            convertedPoints.append((CGFloat(points[i].x), CGFloat(points[i].y)))
+        do {
+            newInput = try AVCaptureDeviceInput(device: newCamera)
+            self.captureSession.addInput(newInput)
+        } catch {
+            print(error)
         }
         
-        return convertedPoints
+        self.captureSession.commitConfiguration()
     }
 }
 
 
-extension CGRect {
-    func scaled(to size: CGSize) -> CGRect {
-        return CGRect(
-            x: self.origin.x * size.width,
-            y: self.origin.y * size.height,
-            width: self.size.width * size.width,
-            height: self.size.height * size.height
-        )
-    }
-}
+
 
 

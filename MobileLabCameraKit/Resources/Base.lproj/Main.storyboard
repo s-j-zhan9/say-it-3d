@@ -27,6 +27,14 @@
                                     <action selector="slider:" destination="BYZ-38-t0r" eventType="valueChanged" id="gWt-He-O0z"/>
                                 </connections>
                             </slider>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zKu-dk-JRw" userLabel="Camera Toggle">
+                                <rect key="frame" x="24" y="104" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <connections>
+                                    <action selector="toggleCamera:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KWF-Fq-fsd"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
