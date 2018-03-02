@@ -8,9 +8,51 @@
 
 import UIKit
 import AVFoundation
+import CoreLocation
 
 
-class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
+// Sample filters and settings.
+// For more resournces/examples:
+//   https://developer.apple.com/library/content/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html
+//   https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/CoreImaging/ci_tasks/ci_tasks.html
+//   https://github.com/FlexMonkey/Filterpedia
+
+//let NoFilter = "No Filter"
+//let NoFilterFilter: CIFilter? = nil
+
+let CMYKHalftoneFilter = CIFilter(name: "CICMYKHalftone", withInputParameters: ["inputWidth" : 20, "inputSharpness": 1])
+
+let ComicEffectFilter = CIFilter(name: "CIComicEffect")
+
+let CrystallizeFilter = CIFilter(name: "CICrystallize", withInputParameters: ["inputRadius" : 30])
+
+let EdgesEffectFilter = CIFilter(name: "CIEdges", withInputParameters: ["inputIntensity" : 10])
+
+let HexagonalPixellateFilter = CIFilter(name: "CIHexagonalPixellate", withInputParameters: ["inputScale" : 40])
+
+let InvertFilter = CIFilter(name: "CIColorInvert")
+
+let PointillizeFilter = CIFilter(name: "CIPointillize", withInputParameters: ["inputRadius" : 30])
+
+let LineOverlayFilter = CIFilter(name: "CILineOverlay")
+
+let PosterizeFilter = CIFilter(name: "CIColorPosterize", withInputParameters: ["inputLevels" : 5])
+
+let Filters = [
+    nil,
+    CMYKHalftoneFilter,
+    ComicEffectFilter,
+    CrystallizeFilter,
+    EdgesEffectFilter,
+    HexagonalPixellateFilter,
+    InvertFilter,
+    PointillizeFilter,
+    LineOverlayFilter,
+    PosterizeFilter
+]
+
+
+class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate, CLLocationManagerDelegate {
     
     // Real time camera capture session.
     var captureSession = AVCaptureSession()
@@ -23,76 +65,94 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     // Context for using Core Image filters.
     let context = CIContext()
     
-    // Track orientation changes.
-    var orientation: AVCaptureVideoOrientation?
+    // Track device orientation changes.
+    var orientation: AVCaptureVideoOrientation = .portrait
 
-    var value: Float = 0
+    // Use location manager to get heading.
+    let locationManager = CLLocationManager()
+
+    // Reference to current filter.
+    var currentFilter: CIFilter?
+    var filterIndex = 0
     
-    @IBAction func toggleCamera(_ sender: UIButton) {
-        switchCameraInput()
-    }
-    
-    @IBAction func slider(_ sender: UISlider) {
-        value = sender.value
-    }
-    
-    // Image view for filter image.
+    // Image view for filtered image.
     @IBOutlet weak var filteredImage: UIImageView!
+
+    // Label for heading.
+    @IBOutlet weak var headingLabel: UILabel!
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupDevice(useBackCamera: true)
+        setupDevice()
         setupInputOutput()
+
+        // Configure location manager to get heading.
+        if (CLLocationManager.headingAvailable()) {
+            locationManager.headingFilter = 1
+            locationManager.startUpdatingHeading()
+            locationManager.delegate = self
+        }
     }
+    
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        // Detect orientation changes.
+        // Detect device orientation changes.
         orientation = AVCaptureVideoOrientation(rawValue: UIApplication.shared.statusBarOrientation.rawValue)!
     }
     
 
-    // AVCaptureVideoDataOutputSampleBufferDelegate method
+    // CLLocationManagerDelegate method returns heading.
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading heading: CLHeading) {
+        headingLabel.text = "Heading: \(Int(heading.magneticHeading))"
+    }
+
+
+    // Cycle through filters.
+    @IBAction func toggleFilterButton(_ sender: UIButton) {
+        filterIndex = filterIndex + 1 == Filters.count ? 0 : filterIndex + 1
+
+        currentFilter =  Filters[filterIndex]
+    }
+    
+    // Toggle front/back camera
+    @IBAction func toggleCameraButton(_ sender: UIButton) {
+        switchCameraInput()
+    }
+
+    
+    // AVCaptureVideoDataOutputSampleBufferDelegate method.
     func captureOutput(_ output: AVCaptureOutput,
                        didOutput sampleBuffer: CMSampleBuffer,
                        from connection: AVCaptureConnection) {
+
+        // Set correct device orientation.
+        connection.videoOrientation = orientation
         
-        connection.videoOrientation = orientation!
-        
+        // Get pixel buffer.
         let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-//        let cameraImage = CIImage(cvImageBuffer: pixelBuffer!).oriented(.upMirrored)
+        var cameraImage = CIImage(cvImageBuffer: pixelBuffer!)
 
-        let cameraImage = CIImage(cvImageBuffer: pixelBuffer!)
+        // Mirror camera image if using front camera.
+        if currentCamera == frontCamera {
+            cameraImage = cameraImage.oriented(.upMirrored)
+        }
 
+        // Get the filtered image if a currentFilter is set.
+        var filteredImage: UIImage!
+        if currentFilter == nil {
+            filteredImage =  UIImage(ciImage: cameraImage)
+        } else {
+            self.currentFilter!.setValue(cameraImage, forKey: kCIInputImageKey)
+            let cgImage = self.context.createCGImage(self.currentFilter!.outputImage!, from: cameraImage.extent)!
+            filteredImage = UIImage(cgImage: cgImage)
+        }
         
-        //        1
-        //        let comicEffect = CIFilter(name: "CIComicEffect")
-        //        comicEffect!.setValue(cameraImage, forKey: kCIInputImageKey)
-        //        let cgImage = self.context.createCGImage(comicEffect!.outputImage!, from: cameraImage.extent)!
-        
-        
-        //        2
-        //        let CMYKHalftoneFilter = CIFilter(name: "CICMYKHalftone", withInputParameters: ["inputWidth" : self.value, "inputSharpness": 1])
-        //        CMYKHalftoneFilter!.setValue(cameraImage, forKey: kCIInputImageKey)
-        //        let cgImage = self.context.createCGImage(CMYKHalftoneFilter!.outputImage!, from: cameraImage.extent)!
-        
-        //      3
-        //        let EdgesEffectFilter = CIFilter(name: "CIEdges", withInputParameters: ["inputIntensity" : self.value])
-        //        EdgesEffectFilter!.setValue(cameraImage, forKey: kCIInputImageKey)
-        //        let cgImage = self.context.createCGImage(EdgesEffectFilter!.outputImage!, from: cameraImage.extent)!
-        
-        
-        
-        // 4
-        let cgImage = self.context.createCGImage(cameraImage, from: cameraImage.extent)!
-        
-        
-
+        // Set image view outlet with filtered image.
         DispatchQueue.main.async {
-            let filteredImage = UIImage(cgImage: cgImage)
             self.filteredImage.image = filteredImage
         }
     }
@@ -100,12 +160,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 
 
 
-
 ///////////////////////////////////////////////////////////////
 // Helper methods to setup camera capture view.
 extension ViewController {
    
-    func setupDevice(useBackCamera: Bool) {
+    func setupDevice() {
         let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera],
                                                                       mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
         let devices = deviceDiscoverySession.devices
@@ -119,7 +178,7 @@ extension ViewController {
             }
         }
         
-        currentCamera = useBackCamera ? backCamera : frontCamera
+        currentCamera = backCamera
     }
     
     func setupInputOutput() {
@@ -168,10 +227,10 @@ extension ViewController {
         }
     }
 
-    func cameraWithPosition(position: AVCaptureDevice.Position) -> AVCaptureDevice?
-    {
+    func cameraWithPosition(position: AVCaptureDevice.Position) -> AVCaptureDevice? {
         let discovery = AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera],
-                                                         mediaType: AVMediaType.video, position: .unspecified) as AVCaptureDevice.DiscoverySession
+                                                         mediaType: AVMediaType.video,
+                                                         position: .unspecified) as AVCaptureDevice.DiscoverySession
         for device in discovery.devices as [AVCaptureDevice] {
             if device.position == position {
                 return device
@@ -198,14 +257,11 @@ extension ViewController {
         
         var newCamera:AVCaptureDevice!
         if let oldCamera = existingConnection {
-            if oldCamera.device.position == .back {
-                newCamera = frontCamera
-            } else {
-                newCamera = backCamera
-            }
+            newCamera = oldCamera.device.position == .back ? frontCamera : backCamera
+            currentCamera = newCamera
         }
         
-        var newInput:AVCaptureDeviceInput!
+        var newInput: AVCaptureDeviceInput!
         
         do {
             newInput = try AVCaptureDeviceInput(device: newCamera)
@@ -217,8 +273,3 @@ extension ViewController {
         self.captureSession.commitConfiguration()
     }
 }
-
-
-
-
-

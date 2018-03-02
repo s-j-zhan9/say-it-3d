@@ -21,35 +21,66 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ElV-9H-5od">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                             </imageView>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="BSn-hr-hmg">
-                                <rect key="frame" x="15" y="52" width="345" height="31"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7OC-OF-Gic" userLabel="Camera Toggle">
+                                <rect key="frame" x="278" y="78" width="81" height="30"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.75" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="81" id="1QH-KX-SKP"/>
+                                    <constraint firstAttribute="height" constant="30" id="YRb-hZ-cgs"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Filter">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                                 <connections>
-                                    <action selector="slider:" destination="BYZ-38-t0r" eventType="valueChanged" id="gWt-He-O0z"/>
-                                </connections>
-                            </slider>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zKu-dk-JRw" userLabel="Camera Toggle">
-                                <rect key="frame" x="24" y="104" width="46" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <connections>
-                                    <action selector="toggleCamera:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KWF-Fq-fsd"/>
+                                    <action selector="toggleFilterButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Xzw-SI-TBT"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zKu-dk-JRw" userLabel="Camera Toggle">
+                                <rect key="frame" x="278" y="40" width="81" height="30"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.75" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="81" id="NaY-E2-05G"/>
+                                    <constraint firstAttribute="height" constant="30" id="XNe-OR-s7q"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Camera">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="toggleCameraButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zkm-Et-ppg"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Heading: 180" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Hk-oL-IMN">
+                                <rect key="frame" x="16" y="40" width="103" height="30"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.75" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="719-d9-Op9"/>
+                                    <constraint firstAttribute="width" constant="103" id="pPv-Gb-kwm"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="12"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="7OC-OF-Gic" secondAttribute="trailing" constant="16" id="4Df-3g-WdQ"/>
+                            <constraint firstItem="zKu-dk-JRw" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="8sU-z3-M6q"/>
                             <constraint firstItem="ElV-9H-5od" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="ADd-e4-fUc"/>
-                            <constraint firstItem="BSn-hr-hmg" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="17" id="Iwx-bi-XaV"/>
+                            <constraint firstItem="8Hk-oL-IMN" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Ixz-mN-mDc"/>
+                            <constraint firstItem="7OC-OF-Gic" firstAttribute="top" secondItem="zKu-dk-JRw" secondAttribute="bottom" constant="8" id="Oi0-ie-KdX"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zKu-dk-JRw" secondAttribute="trailing" constant="16" id="Wki-qY-d9n"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="ElV-9H-5od" secondAttribute="trailing" id="XX0-bB-GNZ"/>
+                            <constraint firstItem="8Hk-oL-IMN" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="aTr-Nh-TM9"/>
                             <constraint firstItem="ElV-9H-5od" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="c4Z-gk-8m1"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ElV-9H-5od" secondAttribute="bottom" id="vji-4W-gML"/>
-                            <constraint firstItem="BSn-hr-hmg" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="32" id="wui-Ma-HwZ"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BSn-hr-hmg" secondAttribute="trailing" constant="17" id="xV3-zk-crv"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
                         <outlet property="filteredImage" destination="ElV-9H-5od" id="U5j-su-mjI"/>
+                        <outlet property="headingLabel" destination="8Hk-oL-IMN" id="KEa-6K-wVJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
