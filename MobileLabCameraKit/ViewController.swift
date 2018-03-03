@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import CoreLocation
+import Vision
 
 
 // Sample filters and settings.
@@ -17,39 +18,50 @@ import CoreLocation
 //   https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/CoreImaging/ci_tasks/ci_tasks.html
 //   https://github.com/FlexMonkey/Filterpedia
 
-//let NoFilter = "No Filter"
-//let NoFilterFilter: CIFilter? = nil
+let NoFilter = "No Filter"
+let NoFilterFilter: CIFilter? = nil
 
+let CMYKHalftone = "CMYK Halftone"
 let CMYKHalftoneFilter = CIFilter(name: "CICMYKHalftone", withInputParameters: ["inputWidth" : 20, "inputSharpness": 1])
 
+let ComicEffect = "Comic Effect"
 let ComicEffectFilter = CIFilter(name: "CIComicEffect")
 
+let Crystallize = "Crystallize"
 let CrystallizeFilter = CIFilter(name: "CICrystallize", withInputParameters: ["inputRadius" : 30])
 
+let Edges = "Edges"
 let EdgesEffectFilter = CIFilter(name: "CIEdges", withInputParameters: ["inputIntensity" : 10])
 
+let HexagonalPixellate = "Hex Pixellate"
 let HexagonalPixellateFilter = CIFilter(name: "CIHexagonalPixellate", withInputParameters: ["inputScale" : 40])
 
+let Invert = "Invert"
 let InvertFilter = CIFilter(name: "CIColorInvert")
 
+let Pointillize = "Pointillize"
 let PointillizeFilter = CIFilter(name: "CIPointillize", withInputParameters: ["inputRadius" : 30])
 
+let LineOverlay = "Line Overlay"
 let LineOverlayFilter = CIFilter(name: "CILineOverlay")
 
+let Posterize = "Posterize"
 let PosterizeFilter = CIFilter(name: "CIColorPosterize", withInputParameters: ["inputLevels" : 5])
 
 let Filters = [
-    nil,
-    CMYKHalftoneFilter,
-    ComicEffectFilter,
-    CrystallizeFilter,
-    EdgesEffectFilter,
-    HexagonalPixellateFilter,
-    InvertFilter,
-    PointillizeFilter,
-    LineOverlayFilter,
-    PosterizeFilter
+    NoFilter: NoFilterFilter,
+    CMYKHalftone: CMYKHalftoneFilter,
+    ComicEffect: ComicEffectFilter,
+    Crystallize: CrystallizeFilter,
+    Edges: EdgesEffectFilter,
+    HexagonalPixellate: HexagonalPixellateFilter,
+    Invert: InvertFilter,
+    Pointillize: PointillizeFilter,
+    LineOverlay: LineOverlayFilter,
+    Posterize: PosterizeFilter
 ]
+
+let FilterNames = [String](Filters.keys)
 
 
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate, CLLocationManagerDelegate {
@@ -75,18 +87,42 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var currentFilter: CIFilter?
     var filterIndex = 0
     
+    // Vision framework objects.
+    let faceDetection = VNDetectFaceRectanglesRequest()
+    let faceLandmarks = VNDetectFaceLandmarksRequest()
+    let faceLandmarksDetectionRequest = VNSequenceRequestHandler()
+    let faceDetectionRequest = VNSequenceRequestHandler()
+
+    // Layer for custom drawing.
+    let shapeLayer = CAShapeLayer()
+
+    // Markers for tracking eyes.
+    let leftEyeMaker = UIImageView(image: UIImage(named: "grinning-face.png"))
+    let rightEyeMaker = UIImageView(image: UIImage(named: "face-tongue.png"))
+    
+    // Flag to track if face tracking is on/off.
+    var isVisionOn = false
+    
+    
     // Image view for filtered image.
     @IBOutlet weak var filteredImage: UIImageView!
 
-    // Label for heading.
+    // Label for magnetic heading value.
     @IBOutlet weak var headingLabel: UILabel!
+
+    // Outlets to buttons.
+    @IBOutlet weak var cameraButton: UIButton!
+    @IBOutlet weak var filterButton: UIButton!
+    @IBOutlet weak var visionButton: UIButton!
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Camera device setup.
         setupDevice()
         setupInputOutput()
+
 
         // Configure location manager to get heading.
         if (CLLocationManager.headingAvailable()) {
@@ -94,14 +130,72 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             locationManager.startUpdatingHeading()
             locationManager.delegate = self
         }
+
+
+        // Add eye markers used for face tracking.
+        // Set to hidden on initial setup.
+        leftEyeMaker.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        leftEyeMaker.isHidden = true
+        self.view.addSubview(leftEyeMaker)
+
+        rightEyeMaker.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        rightEyeMaker.isHidden = true
+        self.view.addSubview(rightEyeMaker)
+
+
+        // Setup shape layer for custom drawing with face tracking.
+        // Need to filp coordinate system for Vision
+        shapeLayer.strokeColor = UIColor.red.cgColor
+        shapeLayer.lineWidth = 2.0
+        shapeLayer.setAffineTransform(CGAffineTransform(scaleX: -1, y: -1))
+        shapeLayer.isHidden = true
+        view.layer.addSublayer(shapeLayer)
     }
-    
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         // Detect device orientation changes.
         orientation = AVCaptureVideoOrientation(rawValue: UIApplication.shared.statusBarOrientation.rawValue)!
+    
+        // Configure shape layer dimensions.
+        shapeLayer.frame = view.frame
+    }
+    
+
+    // Toggle front/back camera
+    @IBAction func handleCameraButton(_ sender: UIButton) {
+        switchCameraInput()
+        
+        // Set button title.
+        let buttonTitle = currentCamera == frontCamera ? "Front Camera" : "Back Camera"
+        cameraButton.setTitle(buttonTitle, for: .normal)
+    }
+
+    // Cycle through filters.
+    @IBAction func handleFilterButton(_ sender: UIButton) {
+        // Increment to next index.
+        filterIndex = filterIndex + 1 == Filters.count ? 0 : filterIndex + 1
+
+        // Set button ui name.
+        let filterName = FilterNames[filterIndex]
+        filterButton.setTitle(filterName, for: .normal)
+        
+        // Set current filter.
+        currentFilter =  Filters[filterName]!
+    }
+    
+    // Toggle face tracking.
+    @IBAction func handleVisionButton(_ sender: UIButton) {
+        isVisionOn = !isVisionOn
+    
+        let buttonTitle = isVisionOn ? "Vision On" : "Vision Off"
+        visionButton.setTitle(buttonTitle, for: .normal)
+ 
+        // Toggle visibility.
+        shapeLayer.isHidden = !isVisionOn
+        leftEyeMaker.isHidden = !isVisionOn
+        rightEyeMaker.isHidden = !isVisionOn
     }
     
 
@@ -109,21 +203,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     func locationManager(_ manager: CLLocationManager, didUpdateHeading heading: CLHeading) {
         headingLabel.text = "Heading: \(Int(heading.magneticHeading))"
     }
-
-
-    // Cycle through filters.
-    @IBAction func toggleFilterButton(_ sender: UIButton) {
-        filterIndex = filterIndex + 1 == Filters.count ? 0 : filterIndex + 1
-
-        currentFilter =  Filters[filterIndex]
-    }
     
-    // Toggle front/back camera
-    @IBAction func toggleCameraButton(_ sender: UIButton) {
-        switchCameraInput()
-    }
 
-    
     // AVCaptureVideoDataOutputSampleBufferDelegate method.
     func captureOutput(_ output: AVCaptureOutput,
                        didOutput sampleBuffer: CMSampleBuffer,
@@ -150,11 +231,139 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             let cgImage = self.context.createCGImage(self.currentFilter!.outputImage!, from: cameraImage.extent)!
             filteredImage = UIImage(cgImage: cgImage)
         }
-        
+
+        self.detectFace(on: cameraImage.oriented(.upMirrored))
+
         // Set image view outlet with filtered image.
         DispatchQueue.main.async {
             self.filteredImage.image = filteredImage
         }
+    }
+}
+
+
+
+///////////////////////////////////////////////////////////////
+// Helper methods for vision framekwork.
+extension ViewController {
+    
+    func detectFace(on image: CIImage) {
+        try? faceDetectionRequest.perform([faceDetection], on: image)
+        if let results = faceDetection.results as? [VNFaceObservation] {
+            if !results.isEmpty {
+                faceLandmarks.inputFaceObservations = results
+                detectLandmarks(on: image)
+                
+                DispatchQueue.main.async {
+                    self.shapeLayer.sublayers?.removeAll()
+                }
+            }
+        }
+    }
+    
+    func detectLandmarks(on image: CIImage) {
+        try? faceLandmarksDetectionRequest.perform([faceLandmarks], on: image)
+        if let landmarksResults = faceLandmarks.results as? [VNFaceObservation] {
+            for observation in landmarksResults {
+                DispatchQueue.main.async {
+                    if let boundingBox = self.faceLandmarks.inputFaceObservations?.first?.boundingBox {
+                        let faceBoundingBox = boundingBox.scaled(to: self.view.bounds.size)
+                        
+
+                        let leftEye = observation.landmarks?.leftEye
+                        // self.convertPointsForFace(leftEye, faceBoundingBox)
+                        self.centerMarkerForFace(leftEye, faceBoundingBox, self.leftEyeMaker)
+
+                        let rightEye = observation.landmarks?.rightEye
+                        // self.convertPointsForFace(rightEye, faceBoundingBox)
+                        self.centerMarkerForFace(rightEye, faceBoundingBox, self.rightEyeMaker)
+
+                        let nose = observation.landmarks?.nose
+                        self.convertPointsForFace(nose, faceBoundingBox)
+                        
+                        let lips = observation.landmarks?.innerLips
+                        self.convertPointsForFace(lips, faceBoundingBox)
+
+                        let outerLips = observation.landmarks?.outerLips
+                        self.convertPointsForFace(outerLips, faceBoundingBox)
+
+                        let noseCrest = observation.landmarks?.noseCrest
+                        self.convertPointsForFace(noseCrest, faceBoundingBox)
+
+                        let faceContour = observation.landmarks?.faceContour
+                        self.convertPointsForFace(faceContour, faceBoundingBox)
+
+                        // let leftEyebrow = observation.landmarks?.leftEyebrow
+                        // self.convertPointsForFace(leftEyebrow, faceBoundingBox)
+                        
+                        // let rightEyebrow = observation.landmarks?.rightEyebrow
+                        // self.convertPointsForFace(rightEyebrow, faceBoundingBox)
+
+                    }
+                }
+            }
+        }
+    }
+
+    func centerMarkerForFace(_ landmark: VNFaceLandmarkRegion2D?, _ boundingBox: CGRect, _ markerView: UIView) {
+        if let points = landmark?.normalizedPoints {
+            // Caculate the avg point from normalized points.
+            var totalX: CGFloat = 0.0
+            var totalY: CGFloat = 0.0
+            for point in points {
+                totalX += point.x * boundingBox.width + boundingBox.origin.x
+                totalY += point.y * boundingBox.height + boundingBox.origin.y
+            }
+            let avgX = totalX / CGFloat(points.count)
+            let avgY = totalY / CGFloat(points.count)
+            
+            // Position marker view.
+            markerView.center = CGPoint(x: self.view.bounds.width - avgX , y: self.view.bounds.height - avgY)
+        }
+    }
+
+    func convertPointsForFace(_ landmark: VNFaceLandmarkRegion2D?, _ boundingBox: CGRect) {
+        if let points = landmark?.normalizedPoints {
+            let faceLandmarkPoints = points.map { (point: CGPoint) -> (x: CGFloat, y: CGFloat) in
+                let pointX = point.x * boundingBox.width + boundingBox.origin.x
+                let pointY = point.y * boundingBox.height + boundingBox.origin.y
+                
+                return (x: pointX, y: pointY)
+            }
+            
+            DispatchQueue.main.async {
+                self.draw(points: faceLandmarkPoints)
+            }
+        }
+    }
+    
+    func draw(points: [(x: CGFloat, y: CGFloat)]) {
+        let newLayer = CAShapeLayer()
+        newLayer.strokeColor = UIColor.red.cgColor
+        newLayer.lineWidth = 2.0
+        
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: points[0].x, y: points[0].y))
+        for i in 0..<points.count - 1 {
+            let point = CGPoint(x: points[i].x, y: points[i].y)
+            path.addLine(to: point)
+            path.move(to: point)
+        }
+        path.addLine(to: CGPoint(x: points[0].x, y: points[0].y))
+        newLayer.path = path.cgPath
+        
+        shapeLayer.addSublayer(newLayer)
+    }
+}
+
+extension CGRect {
+    func scaled(to size: CGSize) -> CGRect {
+        return CGRect(
+            x: self.origin.x * size.width,
+            y: self.origin.y * size.height,
+            width: self.size.width * size.width,
+            height: self.size.height * size.height
+        )
     }
 }
 

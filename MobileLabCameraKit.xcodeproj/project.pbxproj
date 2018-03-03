@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6AC03AE1204AE97700FA1179 /* grinning-face.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AC03AE0204AE97700FA1179 /* grinning-face.png */; };
+		6AC03AE3204AEA2B00FA1179 /* face-tongue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AC03AE2204AEA2B00FA1179 /* face-tongue.png */; };
 		6AC0758A20474F8C00E14750 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC0758920474F8C00E14750 /* AppDelegate.swift */; };
 		6AC0758C20474F8C00E14750 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC0758B20474F8C00E14750 /* ViewController.swift */; };
 		6AC075A22047500300E14750 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AC0759C2047500300E14750 /* Assets.xcassets */; };
@@ -15,6 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6AC03AE0204AE97700FA1179 /* grinning-face.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grinning-face.png"; sourceTree = "<group>"; };
+		6AC03AE2204AEA2B00FA1179 /* face-tongue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "face-tongue.png"; sourceTree = "<group>"; };
 		6AC0758620474F8C00E14750 /* MobileLabCameraKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileLabCameraKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AC0758920474F8C00E14750 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6AC0758B20474F8C00E14750 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -68,6 +72,8 @@
 				6AC0759D2047500300E14750 /* LaunchScreen.storyboard */,
 				6AC0759C2047500300E14750 /* Assets.xcassets */,
 				6AC075A12047500300E14750 /* Info.plist */,
+				6AC03AE0204AE97700FA1179 /* grinning-face.png */,
+				6AC03AE2204AEA2B00FA1179 /* face-tongue.png */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -131,8 +137,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AC03AE1204AE97700FA1179 /* grinning-face.png in Resources */,
 				6AC075A42047500300E14750 /* Main.storyboard in Resources */,
 				6AC075A22047500300E14750 /* Assets.xcassets in Resources */,
+				6AC03AE3204AEA2B00FA1179 /* face-tongue.png in Resources */,
 				6AC075A32047500300E14750 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
