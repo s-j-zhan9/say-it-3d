@@ -22,31 +22,31 @@ let NoFilter = "No Filter"
 let NoFilterFilter: CIFilter? = nil
 
 let CMYKHalftone = "CMYK Halftone"
-let CMYKHalftoneFilter = CIFilter(name: "CICMYKHalftone", withInputParameters: ["inputWidth" : 20, "inputSharpness": 1])
+let CMYKHalftoneFilter = CIFilter(name: "CICMYKHalftone", parameters: ["inputWidth" : 20, "inputSharpness": 1])
 
 let ComicEffect = "Comic Effect"
 let ComicEffectFilter = CIFilter(name: "CIComicEffect")
 
 let Crystallize = "Crystallize"
-let CrystallizeFilter = CIFilter(name: "CICrystallize", withInputParameters: ["inputRadius" : 30])
+let CrystallizeFilter = CIFilter(name: "CICrystallize", parameters: ["inputRadius" : 30])
 
 let Edges = "Edges"
-let EdgesEffectFilter = CIFilter(name: "CIEdges", withInputParameters: ["inputIntensity" : 10])
+let EdgesEffectFilter = CIFilter(name: "CIEdges", parameters: ["inputIntensity" : 10])
 
 let HexagonalPixellate = "Hex Pixellate"
-let HexagonalPixellateFilter = CIFilter(name: "CIHexagonalPixellate", withInputParameters: ["inputScale" : 40])
+let HexagonalPixellateFilter = CIFilter(name: "CIHexagonalPixellate", parameters: ["inputScale" : 40])
 
 let Invert = "Invert"
 let InvertFilter = CIFilter(name: "CIColorInvert")
 
 let Pointillize = "Pointillize"
-let PointillizeFilter = CIFilter(name: "CIPointillize", withInputParameters: ["inputRadius" : 30])
+let PointillizeFilter = CIFilter(name: "CIPointillize", parameters: ["inputRadius" : 30])
 
 let LineOverlay = "Line Overlay"
 let LineOverlayFilter = CIFilter(name: "CILineOverlay")
 
 let Posterize = "Posterize"
-let PosterizeFilter = CIFilter(name: "CIColorPosterize", withInputParameters: ["inputLevels" : 5])
+let PosterizeFilter = CIFilter(name: "CIColorPosterize", parameters: ["inputLevels" : 5])
 
 let Filters = [
     NoFilter: NoFilterFilter,
@@ -161,7 +161,10 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         // Configure shape layer dimensions.
         shapeLayer.frame = view.frame
     }
-    
+
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
 
     // Toggle front/back camera
     @IBAction func handleCameraButton(_ sender: UIButton) {
