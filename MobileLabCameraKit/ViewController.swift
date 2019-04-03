@@ -251,15 +251,22 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 extension ViewController {
     
     func detectFace(on image: CIImage) {
+        var final_image=UIImage(ciImage: image)
+
         try? faceDetectionRequest.perform([faceDetection], on: image)
         if let results = faceDetection.results as? [VNFaceObservation] {
             if !results.isEmpty {
+            
                 faceLandmarks.inputFaceObservations = results
                 detectLandmarks(on: image)
                 
                 DispatchQueue.main.async {
                     self.shapeLayer.sublayers?.removeAll()
+
                 }
+                
+                
+                print(results)
             }
         }
     }
@@ -324,6 +331,10 @@ extension ViewController {
             markerView.center = CGPoint(x: self.view.bounds.width - avgX , y: self.view.bounds.height - avgY)
         }
     }
+    
+    
+    
+    
 
     func convertPointsForFace(_ landmark: VNFaceLandmarkRegion2D?, _ boundingBox: CGRect) {
         if let points = landmark?.normalizedPoints {
