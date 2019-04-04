@@ -69,4 +69,10 @@ extension EmojiNode {
       plane.firstMaterial?.isDoubleSided = true
     }
   }
+  func update(){
+    if let plane = geometry as? SCNPlane {
+    plane.firstMaterial?.diffuse.contents = (options.first ?? " ").image()
+    plane.firstMaterial?.isDoubleSided = true
+    }
+  }
 }

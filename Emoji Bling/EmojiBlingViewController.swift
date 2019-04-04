@@ -30,11 +30,12 @@ import UIKit
 import ARKit
 
 class EmojiBlingViewController: UIViewController {
-
-  @IBOutlet var sceneView: ARSCNView!
-//  let noseOptions = ["👃", "🐽", "💧", " "]
+    @IBOutlet var sceneView: ARSCNView!
+    @IBOutlet weak var messageField: UITextField!
+    @IBOutlet weak var messageResult: UITextView!
+    //  let noseOptions = ["👃", "🐽", "💧", " "]
 //  let eyeOptions = ["👁", "🌕", "🌟", "🔥", "⚽️", "FUCK🔎", " "]
-  let mouthOptions = ["你好棒"]
+  var mouthOptions = ["Nooo","BREAK","OMG"]
 
 //  let hatOptions = ["🎓", "🎩", "🧢", "⛑", "👒", " "]
   let features = ["nose", "leftEye", "rightEye", "mouth", "hat"]
@@ -42,12 +43,34 @@ class EmojiBlingViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    messageField.layer.borderWidth = 2
+    messageField.layer.cornerRadius = 5
+
+    messageField.layer.borderColor = UIColor.white.cgColor
+    messageField.delegate = self
     
     guard ARFaceTrackingConfiguration.isSupported else { fatalError() }
     sceneView.delegate = self
     
+    messageResult.text = mouthOptions.joined(separator:" - ")
+
+    
   }
-  override func viewWillAppear(_ animated: Bool) {
+    @IBAction func submitButton(_ sender: Any) {
+        mouthOptions.insert(messageField.text as! String, at: 0)
+        messageResult.text = mouthOptions.joined(separator:" - ")
+        messageField.text = ""
+        print(mouthOptions)
+        
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        messageField.resignFirstResponder()
+        messageResult.resignFirstResponder()
+
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
     let configuration = ARFaceTrackingConfiguration()
@@ -78,7 +101,7 @@ class EmojiBlingViewController: UIViewController {
 //        child?.scale = SCNVector3(scaleX, 1.0 - eyeBlinkValue, 1.0)
       case "mouth":
         let jawOpenValue = anchor.blendShapes[.jawOpen]?.floatValue ?? 0.2
-        child?.scale = SCNVector3(1 + jawOpenValue*6, 0.1 + jawOpenValue*3, 0.4)
+        child?.scale = SCNVector3(1 + jawOpenValue*6, 0.1 + jawOpenValue*2, 0.4)
       default:
         break
       }
@@ -139,4 +162,10 @@ extension EmojiBlingViewController: ARSCNViewDelegate {
   }
 }
 
-
+extension EmojiBlingViewController: UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+}
