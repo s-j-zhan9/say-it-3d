@@ -32,6 +32,7 @@ import Speech
 
 class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AVAudioRecorderDelegate {
     @IBOutlet var sceneView: ARSCNView!
+    
     @IBOutlet weak var messageField: UITextField!
     @IBOutlet weak var messageResult: UITextView!
     var mouthOptions = ["Nooo","BREAK","OMG"]
@@ -39,7 +40,9 @@ class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AV
     let features = ["nose", "leftEye", "rightEye", "mouth", "hat"]
     let featureIndices = [[9], [1064], [42], [24, 25], [20]]
     
-    //var for audio input
+    //////////////////////////////////////////////
+    ////////////vars for audio input//////////////
+    //////////////////////////////////////////////
     @IBOutlet weak var detectedTextLabel: UILabel!
     
     var timer: Timer?
@@ -53,6 +56,7 @@ class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AV
     
     var mostRecentlyProcessedSegmentDuration: TimeInterval = 0
     
+    //last best word from voice recognition
     var lastBestString = ""
   
   override func viewDidLoad() {
@@ -61,7 +65,6 @@ class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AV
     //messageField Styling
     messageField.layer.borderWidth = 2
     messageField.layer.cornerRadius = 5
-
     messageField.layer.borderColor = UIColor.white.cgColor
     messageField.delegate = self
     
@@ -69,8 +72,16 @@ class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AV
     sceneView.delegate = self
     
     messageResult.text = mouthOptions.joined(separator:" - ")
+
+    
+    // Call this when updateing options.
+    let emojiNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! EmojiNode
+    emojiNode.updateNewOptions(with: ["hi", "bye"])
+    //
     
   }
+    
+    //submit recorded speach to array and refresh the array displayed on top
     @IBAction func submitButton(_ sender: Any) {
         mouthOptions.insert(messageField.text as! String, at: 0)
         messageResult.text = mouthOptions.joined(separator:" - ")
@@ -78,13 +89,14 @@ class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AV
         print(mouthOptions)
         
     }
-    
+    //touch outside the message field to dismiss keyboard
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         messageField.resignFirstResponder()
         messageResult.resignFirstResponder()
 
     }
     
+    //initiate AR tracking
     override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
@@ -98,7 +110,7 @@ class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AV
     
     sceneView.session.pause()
   }
-  
+  //use EmojiNode.swift to map facial features, and animate on jaw open
   func updateFeatures(for node: SCNNode, using anchor: ARFaceAnchor) {
     for (feature, indices) in zip(features, featureIndices) {
       let child = node.childNode(withName: feature, recursively: false) as? EmojiNode
@@ -106,23 +118,15 @@ class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AV
       child?.updatePosition(for: vertices)
       
       switch feature {
-//      case "leftEye":
-//        let scaleX = child?.scale.x ?? 1.0
-//        let eyeBlinkValue = anchor.blendShapes[.eyeBlinkLeft]?.floatValue ?? 0.0
-//        child?.scale = SCNVector3(scaleX, 1.0 - eyeBlinkValue, 1.0)
-//      case "rightEye":
-//        let scaleX = child?.scale.x ?? 1.0
-//        let eyeBlinkValue = anchor.blendShapes[.eyeBlinkRight]?.floatValue ?? 0.0
-//        child?.scale = SCNVector3(scaleX, 1.0 - eyeBlinkValue, 1.0)
       case "mouth":
         let jawOpenValue = anchor.blendShapes[.jawOpen]?.floatValue ?? 0.2
-        child?.scale = SCNVector3(1 + jawOpenValue*6, 0.1 + jawOpenValue*2, 0.4)
+        child?.scale = SCNVector3(1 + jawOpenValue*6, 0.1 + jawOpenValue*2, 0.2)
       default:
         break
       }
     }
   }
-  
+  //enable switching 
   @IBAction func handleTap(_ sender: UITapGestureRecognizer) {
     let location = sender.location(in: sceneView)
     let results = sceneView.hitTest(location, options: nil)
@@ -186,6 +190,7 @@ class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AV
     
     @IBAction func submitSpeech(_ sender: Any) {
         mouthOptions.insert(detectedTextLabel.text as! String, at: 0)
+        detectedTextLabel.text = ""
 
     }
 
@@ -276,29 +281,13 @@ extension EmojiBlingViewController: ARSCNViewDelegate {
     let faceGeometry = ARSCNFaceGeometry(device: device)
     let node = SCNNode(geometry: faceGeometry)
     node.geometry?.firstMaterial?.fillMode = .lines
-    
     node.geometry?.firstMaterial?.transparency = 0.0
-//    let noseNode = EmojiNode(with: noseOptions)
-//    noseNode.name = "nose"
-//    node.addChildNode(noseNode)
-//
-//    let leftEyeNode = EmojiNode(with: eyeOptions)
-//    leftEyeNode.name = "leftEye"
-//    leftEyeNode.rotation = SCNVector4(0, 1, 0, GLKMathDegreesToRadians(180.0))
-//    node.addChildNode(leftEyeNode)
-//
-//    let rightEyeNode = EmojiNode(with: eyeOptions)
-//    rightEyeNode.name = "rightEye"
-//    node.addChildNode(rightEyeNode)
     
     
     let mouthNode = EmojiNode(with: mouthOptions)
     mouthNode.name = "mouth"
     node.addChildNode(mouthNode)
     
-//    let hatNode = EmojiNode(with: hatOptions)
-//    hatNode.name = "hat"
-//    node.addChildNode(hatNode)
     
     updateFeatures(for: node, using: faceAnchor)
     return node
