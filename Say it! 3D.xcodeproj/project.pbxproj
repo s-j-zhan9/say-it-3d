@@ -18,7 +18,7 @@
 
 /* Begin PBXFileReference section */
 		18C7700921272F1A00134695 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
-		601F519B20E617B80037214B /* Emoji Bling.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Emoji Bling.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		601F519B20E617B80037214B /* Say it! 3D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Say it! 3D.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		601F519E20E617B80037214B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		601F51A020E617B80037214B /* EmojiBlingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiBlingViewController.swift; sourceTree = "<group>"; };
 		601F51A320E617B80037214B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -42,7 +42,7 @@
 		601F519220E617B80037214B = {
 			isa = PBXGroup;
 			children = (
-				601F519D20E617B80037214B /* Emoji Bling */,
+				601F519D20E617B80037214B /* Say it! 3D */,
 				601F519C20E617B80037214B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,12 +50,12 @@
 		601F519C20E617B80037214B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				601F519B20E617B80037214B /* Emoji Bling.app */,
+				601F519B20E617B80037214B /* Say it! 3D.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		601F519D20E617B80037214B /* Emoji Bling */ = {
+		601F519D20E617B80037214B /* Say it! 3D */ = {
 			isa = PBXGroup;
 			children = (
 				601F519E20E617B80037214B /* AppDelegate.swift */,
@@ -66,7 +66,7 @@
 				18C7700921272F1A00134695 /* LaunchScreen.storyboard */,
 				601F51AA20E617B90037214B /* Info.plist */,
 			);
-			path = "Emoji Bling";
+			path = "Say it! 3D";
 			sourceTree = "<group>";
 		};
 		601F51B920E61EBA0037214B /* SuperUsefulCode */ = {
@@ -81,9 +81,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		601F519A20E617B80037214B /* Emoji Bling */ = {
+		601F519A20E617B80037214B /* Say it! 3D */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 601F51AD20E617B90037214B /* Build configuration list for PBXNativeTarget "Emoji Bling" */;
+			buildConfigurationList = 601F51AD20E617B90037214B /* Build configuration list for PBXNativeTarget "Say it! 3D" */;
 			buildPhases = (
 				601F519720E617B80037214B /* Sources */,
 				601F519820E617B80037214B /* Frameworks */,
@@ -93,9 +93,9 @@
 			);
 			dependencies = (
 			);
-			name = "Emoji Bling";
+			name = "Say it! 3D";
 			productName = "Emoji Bling";
-			productReference = 601F519B20E617B80037214B /* Emoji Bling.app */;
+			productReference = 601F519B20E617B80037214B /* Say it! 3D.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -106,14 +106,14 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1000;
 				LastUpgradeCheck = 1000;
-				ORGANIZATIONNAME = "Kelvin Lau";
+				ORGANIZATIONNAME = "s-j-zhang";
 				TargetAttributes = {
 					601F519A20E617B80037214B = {
 						CreatedOnToolsVersion = 10.0;
 					};
 				};
 			};
-			buildConfigurationList = 601F519620E617B80037214B /* Build configuration list for PBXProject "Emoji Bling" */;
+			buildConfigurationList = 601F519620E617B80037214B /* Build configuration list for PBXProject "Say it! 3D" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -126,7 +126,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				601F519A20E617B80037214B /* Emoji Bling */,
+				601F519A20E617B80037214B /* Say it! 3D */,
 			);
 		};
 /* End PBXProject section */
@@ -323,7 +323,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		601F519620E617B80037214B /* Build configuration list for PBXProject "Emoji Bling" */ = {
+		601F519620E617B80037214B /* Build configuration list for PBXProject "Say it! 3D" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				601F51AB20E617B90037214B /* Debug */,
@@ -332,7 +332,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		601F51AD20E617B90037214B /* Build configuration list for PBXNativeTarget "Emoji Bling" */ = {
+		601F51AD20E617B90037214B /* Build configuration list for PBXNativeTarget "Say it! 3D" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				601F51AE20E617B90037214B /* Debug */,
