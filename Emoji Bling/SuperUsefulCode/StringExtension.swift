@@ -36,7 +36,7 @@ extension String {
   
   func image() -> UIImage? {
     
-    let size = CGSize(width: 240, height: 44)
+    let size = CGSize(width: 480, height: 88)
     
     UIGraphicsBeginImageContextWithOptions(size, false, 0)
     UIColor.clear.set()
@@ -54,7 +54,7 @@ extension String {
     
     let attributes: [NSAttributedString.Key : Any] = [
         .paragraphStyle: paragraphStyle,
-        .font: UIFont(name: "Avenir-Medium", size: CGFloat(40)),
+        .font: UIFont(name: "Avenir-Medium", size: CGFloat(60)),
         .foregroundColor: UIColor.white
     ]
 

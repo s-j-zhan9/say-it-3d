@@ -35,7 +35,7 @@ class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AV
     
     @IBOutlet weak var messageField: UITextField!
     @IBOutlet weak var messageResult: UITextView!
-    var mouthOptions = ["Nooo","BREAK","OMG"]
+    var mouthOptions = ["Enter your Message"]
 
     let features = ["nose", "leftEye", "rightEye", "mouth", "hat"]
     let featureIndices = [[9], [1064], [42], [24, 25], [20]]
@@ -71,22 +71,27 @@ class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AV
     guard ARFaceTrackingConfiguration.isSupported else { fatalError() }
     sceneView.delegate = self
     
-    messageResult.text = mouthOptions.joined(separator:" - ")
+    //messageResult.text = mouthOptions.joined(separator:" - ")
 
-    
-    // Call this when updateing options.
-    let emojiNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! EmojiNode
-    emojiNode.updateNewOptions(with: ["hi", "bye"])
-    //
+
     
   }
     
     //submit recorded speach to array and refresh the array displayed on top
     @IBAction func submitButton(_ sender: Any) {
-        mouthOptions.insert(messageField.text as! String, at: 0)
-        messageResult.text = mouthOptions.joined(separator:" - ")
+        
+        //add text field input to array
+        //mouthOptions.insert(messageField.text as! String, at: 0)
+        mouthOptions = [messageField.text as! String]
+        
+        // Update new Node Options
+        let emojiNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! EmojiNode
+        emojiNode.updateNewOptions(with: mouthOptions)
+        //
+        //show updated array
+        //messageResult.text = mouthOptions.joined(separator:" - ")
         messageField.text = ""
-        print(mouthOptions)
+        //print(mouthOptions)
         
     }
     //touch outside the message field to dismiss keyboard
@@ -120,7 +125,7 @@ class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AV
       switch feature {
       case "mouth":
         let jawOpenValue = anchor.blendShapes[.jawOpen]?.floatValue ?? 0.2
-        child?.scale = SCNVector3(1 + jawOpenValue*6, 0.1 + jawOpenValue*2, 0.2)
+        child?.scale = SCNVector3(1 + jawOpenValue*6, 0.1 + jawOpenValue*2, 0.1)
       default:
         break
       }
@@ -136,141 +141,143 @@ class EmojiBlingViewController: UIViewController, SFSpeechRecognizerDelegate, AV
     }
   }
     
-    //speech recognition
-    @IBAction func startRecording(_ sender: Any) {
-        self.requestSpeechAuthorization()
-        
-      
-        
-        if self.recorder != nil {
-            return
-        }
-        
-        let url: NSURL = NSURL(fileURLWithPath: "/dev/null")
-        
-        let settings = [
-            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-            AVSampleRateKey: 12000,
-            AVNumberOfChannelsKey: 1,
-            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-        ]
-        
-        do {
-            self.recorder = try AVAudioRecorder(url: url as URL, settings: settings )
-            self.recorder.delegate = self
-            self.recorder.isMeteringEnabled = true
-            
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category(rawValue: convertFromAVAudioSessionCategory(AVAudioSession.Category.record)))
-            
-            self.recorder.record()
-        
-        } catch {
-            print("Fail to record.")
-        }
-    }
-    func requestSpeechAuthorization() {
-        SFSpeechRecognizer.requestAuthorization { authStatus in
-            OperationQueue.main.addOperation {
-                switch authStatus {
-                case .authorized:
-                    print("authorized")
-                    self.recordAndRecognizeSpeech()
-                case .denied:
-                    print("denied")
-                case .restricted:
-                    print("restricted")
-                case .notDetermined:
-                    print("notDetermined")
-                @unknown default:
-                    return
-                }
-            }
-        }
-    }
-    
-    @IBAction func submitSpeech(_ sender: Any) {
-        mouthOptions.insert(detectedTextLabel.text as! String, at: 0)
-        detectedTextLabel.text = ""
-
-    }
-
-    func recordAndRecognizeSpeech() {
-        let node = audioEngine.inputNode
-        
-        let recordingFormat = node.outputFormat(forBus: 0)
-        node.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
-            self.request.append(buffer)
-        }
-        
-        audioEngine.prepare()
-        do {
-            try audioEngine.start()
-        } catch {
-            self.sendAlert(message: "There has been an audio engine error.")
-            return print(error)
-        }
-        guard let myRecognizer = SFSpeechRecognizer() else {
-            self.sendAlert(message: "Speech recognition is not supported for your current locale.")
-            return
-        }
-        if !myRecognizer.isAvailable {
-            self.sendAlert(message: "Speech recognition is not currently available. Check back at a later time.")
-            // Recognizer is not available right now
-            return
-        }
-        
-        recognitionTask = speechRecognizer?.recognitionTask(with: request, resultHandler: { result, error in
-            if let result = result {
-                
-                var bestString = result.bestTranscription.formattedString
-                self.detectedTextLabel.text = bestString
-                
-                if let lastSegment = result.bestTranscription.segments.last,
-                    lastSegment.duration > self.mostRecentlyProcessedSegmentDuration {
-                    self.mostRecentlyProcessedSegmentDuration = lastSegment.duration
-                    
-                    /////////////////////////////////////////////////////////////////////
-                    // Get last spoken word.
-                    // Process request here.
-                    
-                    let string = lastSegment.substring
-                    
-                    if string.lowercased() == "green" {
-                        self.view.backgroundColor = .green
-                    } else if string.lowercased() == "red" {
-                        self.view.backgroundColor = .red
-                    } else if string.lowercased() == "black" {
-                        self.view.backgroundColor = .black
-                    } else if string.lowercased() == "clear" {
-                        bestString = ""
-                        print("bestString is\(bestString)")
-                        self.detectedTextLabel.text = bestString
-                        
-                    }
-                    
-                    /////////////////////////////////////////////////////////////////////
-                }
-                
-            } else if let error = error {
-                self.sendAlert(message: "There has been a speech recognition error.")
-                print(error)
-            }
-            
-        })
-    }
-    
-    func sendAlert(message: String) {
-        let alert = UIAlertController(title: "Speech Recognizer Error", message: message, preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-    }
-    
 }
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
-    return input.rawValue
-}
+//
+//    //speech recognition
+//    @IBAction func startRecording(_ sender: Any) {
+//        self.requestSpeechAuthorization()
+//
+//
+//
+//        if self.recorder != nil {
+//            return
+//        }
+//
+//        let url: NSURL = NSURL(fileURLWithPath: "/dev/null")
+//
+//        let settings = [
+//            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+//            AVSampleRateKey: 12000,
+//            AVNumberOfChannelsKey: 1,
+//            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+//        ]
+//
+//        do {
+//            self.recorder = try AVAudioRecorder(url: url as URL, settings: settings )
+//            self.recorder.delegate = self
+//            self.recorder.isMeteringEnabled = true
+//
+//            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category(rawValue: convertFromAVAudioSessionCategory(AVAudioSession.Category.record)))
+//
+//            self.recorder.record()
+//
+//        } catch {
+//            print("Fail to record.")
+//        }
+//    }
+//    func requestSpeechAuthorization() {
+//        SFSpeechRecognizer.requestAuthorization { authStatus in
+//            OperationQueue.main.addOperation {
+//                switch authStatus {
+//                case .authorized:
+//                    print("authorized")
+//                    self.recordAndRecognizeSpeech()
+//                case .denied:
+//                    print("denied")
+//                case .restricted:
+//                    print("restricted")
+//                case .notDetermined:
+//                    print("notDetermined")
+//                @unknown default:
+//                    return
+//                }
+//            }
+//        }
+//    }
+//
+//    @IBAction func submitSpeech(_ sender: Any) {
+//        mouthOptions.insert(detectedTextLabel.text as! String, at: 0)
+//        detectedTextLabel.text = ""
+//
+//    }
+//
+//    func recordAndRecognizeSpeech() {
+//        let node = audioEngine.inputNode
+//
+//        let recordingFormat = node.outputFormat(forBus: 0)
+//        node.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
+//            self.request.append(buffer)
+//        }
+//
+//        audioEngine.prepare()
+//        do {
+//            try audioEngine.start()
+//        } catch {
+//            self.sendAlert(message: "There has been an audio engine error.")
+//            return print(error)
+//        }
+//        guard let myRecognizer = SFSpeechRecognizer() else {
+//            self.sendAlert(message: "Speech recognition is not supported for your current locale.")
+//            return
+//        }
+//        if !myRecognizer.isAvailable {
+//            self.sendAlert(message: "Speech recognition is not currently available. Check back at a later time.")
+//            // Recognizer is not available right now
+//            return
+//        }
+//
+//        recognitionTask = speechRecognizer?.recognitionTask(with: request, resultHandler: { result, error in
+//            if let result = result {
+//
+//                var bestString = result.bestTranscription.formattedString
+//                self.detectedTextLabel.text = bestString
+//
+//                if let lastSegment = result.bestTranscription.segments.last,
+//                    lastSegment.duration > self.mostRecentlyProcessedSegmentDuration {
+//                    self.mostRecentlyProcessedSegmentDuration = lastSegment.duration
+//
+//                    /////////////////////////////////////////////////////////////////////
+//                    // Get last spoken word.
+//                    // Process request here.
+//
+//                    let string = lastSegment.substring
+//
+//                    if string.lowercased() == "green" {
+//                        self.view.backgroundColor = .green
+//                    } else if string.lowercased() == "red" {
+//                        self.view.backgroundColor = .red
+//                    } else if string.lowercased() == "black" {
+//                        self.view.backgroundColor = .black
+//                    } else if string.lowercased() == "clear" {
+//                        bestString = ""
+//                        print("bestString is\(bestString)")
+//                        self.detectedTextLabel.text = bestString
+//
+//                    }
+//
+//                    /////////////////////////////////////////////////////////////////////
+//                }
+//
+//            } else if let error = error {
+//                self.sendAlert(message: "There has been a speech recognition error.")
+//                print(error)
+//            }
+//
+//        })
+//    }
+//
+//    func sendAlert(message: String) {
+//        let alert = UIAlertController(title: "Speech Recognizer Error", message: message, preferredStyle: UIAlertController.Style.alert)
+//        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+//        self.present(alert, animated: true, completion: nil)
+//    }
+//
+//}
+//
+//// Helper function inserted by Swift 4.2 migrator.
+//fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+//    return input.rawValue
+//}
 
 
 extension EmojiBlingViewController: ARSCNViewDelegate {

@@ -51,8 +51,14 @@ class EmojiNode: SCNNode {
     fatalError("init(coder:) has not been implemented")
   }
     
-    func updateNewOptions(with options: [String]) {
+    func updateNewOptions(with options: [String], width: CGFloat = 0.06, height: CGFloat = 0.06) {
+        self.options = options
+
+        let plane = SCNPlane(width: width, height: height)
+        plane.firstMaterial?.diffuse.contents = (options.first ?? " ").image()
+        plane.firstMaterial?.isDoubleSided = true
         
+        geometry = plane
     }
     
 }
