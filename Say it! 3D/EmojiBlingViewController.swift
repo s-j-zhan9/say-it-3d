@@ -5,7 +5,6 @@ class EmojiBlingViewController: UIViewController{
     @IBOutlet var sceneView: ARSCNView!
     
     @IBOutlet weak var messageField: UITextField!
-    @IBOutlet weak var messageResult: UITextView!
     var mouthOptions = ["Enter your Message"]
 
     let features = ["nose", "leftEye", "rightEye", "mouth", "hat"]

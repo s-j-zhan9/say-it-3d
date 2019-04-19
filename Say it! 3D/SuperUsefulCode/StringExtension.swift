@@ -44,10 +44,6 @@ extension String {
     let rect = CGRect(origin: .zero, size: size)
     UIRectFill(CGRect(origin: .zero, size: size))
     
-//    var myFont = UIFont(name: "HelveticaNeue", size: CGFloat(18))
-//    myFont.textColor = .white
-//
-//    (self as AnyObject).draw(in: rect, withAttributes: [.font: myFont])
     
     let paragraphStyle = NSMutableParagraphStyle()
     paragraphStyle.alignment = .center
@@ -59,13 +55,8 @@ extension String {
     ]
 
     
-//    let myText = ""
-//    let attributedString = NSAttributedString(string: myText, attributes: attributes)
-    
     (self as AnyObject).draw(in: rect, withAttributes: attributes)
-    
-//    attributedString.draw(in: rect)
-    
+        
     let image = UIGraphicsGetImageFromCurrentImageContext()
     
     UIGraphicsEndImageContext()

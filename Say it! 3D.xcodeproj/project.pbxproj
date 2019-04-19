@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		18C7700A21272F1A00134695 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18C7700921272F1A00134695 /* LaunchScreen.storyboard */; };
+		5A37995F226929C50022957D /* IBInspectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A37995E226929C50022957D /* IBInspectable.swift */; };
 		601F519F20E617B80037214B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F519E20E617B80037214B /* AppDelegate.swift */; };
 		601F51A120E617B80037214B /* EmojiBlingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51A020E617B80037214B /* EmojiBlingViewController.swift */; };
 		601F51A420E617B80037214B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 601F51A220E617B80037214B /* Main.storyboard */; };
@@ -18,6 +19,7 @@
 
 /* Begin PBXFileReference section */
 		18C7700921272F1A00134695 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		5A37995E226929C50022957D /* IBInspectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IBInspectable.swift; sourceTree = "<group>"; };
 		601F519B20E617B80037214B /* Say it! 3D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Say it! 3D.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		601F519E20E617B80037214B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		601F51A020E617B80037214B /* EmojiBlingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiBlingViewController.swift; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 			children = (
 				601F51BA20E61EBA0037214B /* EmojiNode.swift */,
 				601F51BB20E61EBA0037214B /* StringExtension.swift */,
+				5A37995E226929C50022957D /* IBInspectable.swift */,
 			);
 			path = SuperUsefulCode;
 			sourceTree = "<group>";
@@ -150,6 +153,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				601F51BD20E61EBA0037214B /* StringExtension.swift in Sources */,
+				5A37995F226929C50022957D /* IBInspectable.swift in Sources */,
 				601F51A120E617B80037214B /* EmojiBlingViewController.swift in Sources */,
 				601F51BC20E61EBA0037214B /* EmojiNode.swift in Sources */,
 				601F519F20E617B80037214B /* AppDelegate.swift in Sources */,
