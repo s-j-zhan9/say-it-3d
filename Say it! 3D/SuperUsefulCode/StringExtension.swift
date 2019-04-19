@@ -34,7 +34,7 @@ import UIKit
 
 extension String {
   
-  func image() -> UIImage? {
+    func image() -> UIImage? {
     
     let size = CGSize(width: 480, height: 88)
     
@@ -48,12 +48,13 @@ extension String {
     let paragraphStyle = NSMutableParagraphStyle()
     paragraphStyle.alignment = .center
     
-    let attributes: [NSAttributedString.Key : Any] = [
+        let attributes: [NSAttributedString.Key : Any] = [
         .paragraphStyle: paragraphStyle,
+        
         .font: UIFont(name: "Avenir-Medium", size: CGFloat(60)),
         .foregroundColor: UIColor.white
-    ]
-
+        ]
+ 
     
     (self as AnyObject).draw(in: rect, withAttributes: attributes)
         

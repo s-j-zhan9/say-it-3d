@@ -6,7 +6,7 @@ class EmojiBlingViewController: UIViewController{
     
     @IBOutlet weak var messageField: UITextField!
     var mouthOptions = ["Enter your Message"]
-
+    let textSize = [0.1,0.3,0.05]
     let features = ["nose", "leftEye", "rightEye", "mouth", "hat"]
     let featureIndices = [[9], [1064], [42], [24, 25], [20]]
     
@@ -26,7 +26,7 @@ class EmojiBlingViewController: UIViewController{
     
   }
     
-    //submit recorded speach to array and refresh the array displayed on top
+    //submit new input and push to mouthOptions
     @IBAction func submitButton(_ sender: Any) {
         
         //add text field input to array
@@ -36,18 +36,13 @@ class EmojiBlingViewController: UIViewController{
         // Update new Node Options
         let emojiNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! EmojiNode
         emojiNode.updateNewOptions(with: mouthOptions)
-        //
-        //show updated array
-        //messageResult.text = mouthOptions.joined(separator:" - ")
+
         messageField.text = ""
-        //print(mouthOptions)
         
     }
     //touch outside the message field to dismiss keyboard
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         messageField.resignFirstResponder()
-        messageResult.resignFirstResponder()
-
     }
     
     //initiate AR tracking
@@ -64,8 +59,10 @@ class EmojiBlingViewController: UIViewController{
     
     sceneView.session.pause()
   }
+    
   //use EmojiNode.swift to map facial features, and animate on jaw open
-  func updateFeatures(for node: SCNNode, using anchor: ARFaceAnchor) {
+        //trying to pass in text size
+    func updateFeatures(_: textSize, for node: SCNNode, using anchor: ARFaceAnchor) {
     for (feature, indices) in zip(features, featureIndices) {
       let child = node.childNode(withName: feature, recursively: false) as? EmojiNode
       let vertices = indices.map { anchor.geometry.vertices[$0] }
@@ -74,13 +71,17 @@ class EmojiBlingViewController: UIViewController{
       switch feature {
       case "mouth":
         let jawOpenValue = anchor.blendShapes[.jawOpen]?.floatValue ?? 0.2
-        child?.scale = SCNVector3(1 + jawOpenValue*6, 0.1 + jawOpenValue*2, 0.1)
+        //trying to pass in text size
+        child?.scale = SCNVector3(1 + jawOpenValue*6, 0.1 + jawOpenValue*2, textSize)
       default:
         break
       }
     }
   }
-  //enable switching 
+    
+    
+    
+  //enable switching text size, right now still looping array that only has one element
   @IBAction func handleTap(_ sender: UITapGestureRecognizer) {
     let location = sender.location(in: sceneView)
     let results = sceneView.hitTest(location, options: nil)
