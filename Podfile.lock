@@ -1,0 +1,16 @@
+PODS:
+  - RecordButton (1.0.2)
+
+DEPENDENCIES:
+  - RecordButton
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - RecordButton
+
+SPEC CHECKSUMS:
+  RecordButton: 76677be0f4b94f8a387454a23b4b64bd9b6c0e51
+
+PODFILE CHECKSUM: dcfb405ba941cdd2d6f2e56970e95dfa3e31799f
+
+COCOAPODS: 1.6.1

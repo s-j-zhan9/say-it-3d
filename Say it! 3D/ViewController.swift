@@ -1,8 +1,11 @@
 import UIKit
 import ARKit
+import ReplayKit
+import RecordButton
 
-class EmojiBlingViewController: UIViewController{
+class ViewController: UIViewController{
     @IBOutlet var sceneView: ARSCNView!
+    @IBOutlet weak var textInputView: UIView!
     
     @IBOutlet weak var messageField: UITextField!
     var mouthOptions = ["Enter your Message"]
@@ -10,15 +13,30 @@ class EmojiBlingViewController: UIViewController{
     let features = ["nose", "leftEye", "rightEye", "mouth", "hat"]
     let featureIndices = [[9], [1064], [42], [24, 25], [20]]
     
+    //Record Button
+    var recordButton : RecordButton!
+    var progressTimer : Timer!
+    var progress : CGFloat! = 0
+    
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    //messageField Styling
-    messageField.layer.borderWidth = 2
-    messageField.layer.cornerRadius = 5
-    messageField.layer.borderColor = UIColor.white.cgColor
-    messageField.delegate = self
+    //
+    //
+    //create record button
+    let recordButton = RecordButton(frame: CGRect(x: 0,y: 0,width: 70,height: 70))
+    view.addSubview(recordButton)
+    recordButton.center = self.view.center
+    recordButton.progressColor = .red
+    recordButton.closeWhenFinished = false
+    
+    //The recordButton needs a target for start and stopping the progress timer. Add this code after initialization of the recordButton (usualy in viewDidLoad())
+    recordButton.addTarget(self, action: #selector(ViewController.record), for: .touchDown)
+    recordButton.addTarget(self, action: #selector(ViewController.stop), for: UIControl.Event.touchUpInside)
+    recordButton.center.x = self.view.center.x
+
+    textInputView.isHidden = true
     
     guard ARFaceTrackingConfiguration.isSupported else { fatalError() }
     sceneView.delegate = self
@@ -26,6 +44,40 @@ class EmojiBlingViewController: UIViewController{
     
   }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
+    //record functions
+    @objc func record() {
+        self.progressTimer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(ViewController.updateProgress), userInfo: nil, repeats: true)
+    }
+    
+    @objc func updateProgress() {
+        
+        let maxDuration = CGFloat(5) // Max duration of the recordButton
+        
+        progress = progress + (CGFloat(0.05) / maxDuration)
+        recordButton.setProgress(progress)
+        
+        if progress >= 1 {
+            progressTimer.invalidate()
+        }
+        
+    }
+    
+    @objc func stop() {
+        self.progressTimer.invalidate()
+    }
+    
+    //text input
+    
+    @IBAction func textInputButton(_ sender: Any) {
+        textInputView.isHidden = false
+        messageField.becomeFirstResponder()
+
+
+    }
     //submit recorded speach to array and refresh the array displayed on top
     @IBAction func submitButton(_ sender: Any) {
         
@@ -40,13 +92,13 @@ class EmojiBlingViewController: UIViewController{
         //show updated array
         //messageResult.text = mouthOptions.joined(separator:" - ")
         messageField.text = ""
-        //print(mouthOptions)
+        messageField.resignFirstResponder()
+        textInputView.isHidden = true
         
     }
     //touch outside the message field to dismiss keyboard
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         messageField.resignFirstResponder()
-        messageResult.resignFirstResponder()
 
     }
     
@@ -93,7 +145,7 @@ class EmojiBlingViewController: UIViewController{
 }
 
 
-extension EmojiBlingViewController: ARSCNViewDelegate {
+extension ViewController: ARSCNViewDelegate {
   
   func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
     guard let faceAnchor = anchor as? ARFaceAnchor,
@@ -121,7 +173,7 @@ extension EmojiBlingViewController: ARSCNViewDelegate {
   }
 }
 
-extension EmojiBlingViewController: UITextFieldDelegate{
+extension ViewController: UITextFieldDelegate{
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true

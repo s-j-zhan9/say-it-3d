@@ -10,24 +10,28 @@
 		18C7700A21272F1A00134695 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18C7700921272F1A00134695 /* LaunchScreen.storyboard */; };
 		5A37995F226929C50022957D /* IBInspectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A37995E226929C50022957D /* IBInspectable.swift */; };
 		601F519F20E617B80037214B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F519E20E617B80037214B /* AppDelegate.swift */; };
-		601F51A120E617B80037214B /* EmojiBlingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51A020E617B80037214B /* EmojiBlingViewController.swift */; };
+		601F51A120E617B80037214B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51A020E617B80037214B /* ViewController.swift */; };
 		601F51A420E617B80037214B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 601F51A220E617B80037214B /* Main.storyboard */; };
 		601F51A620E617B90037214B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 601F51A520E617B90037214B /* Assets.xcassets */; };
 		601F51BC20E61EBA0037214B /* EmojiNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51BA20E61EBA0037214B /* EmojiNode.swift */; };
 		601F51BD20E61EBA0037214B /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51BB20E61EBA0037214B /* StringExtension.swift */; };
+		96C80B5B0D6E6D3DF1D86235 /* Pods_Say_it__3D.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4EECA4EEE7CD06071F6663F /* Pods_Say_it__3D.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		18C7700921272F1A00134695 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		245CC670E86E7C31C17EA46B /* Pods-Say it! 3D.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Say it! 3D.release.xcconfig"; path = "Target Support Files/Pods-Say it! 3D/Pods-Say it! 3D.release.xcconfig"; sourceTree = "<group>"; };
+		41E49C6B8AAC480535CC16EB /* Pods-Say it! 3D.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Say it! 3D.debug.xcconfig"; path = "Target Support Files/Pods-Say it! 3D/Pods-Say it! 3D.debug.xcconfig"; sourceTree = "<group>"; };
 		5A37995E226929C50022957D /* IBInspectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IBInspectable.swift; sourceTree = "<group>"; };
 		601F519B20E617B80037214B /* Say it! 3D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Say it! 3D.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		601F519E20E617B80037214B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		601F51A020E617B80037214B /* EmojiBlingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiBlingViewController.swift; sourceTree = "<group>"; };
+		601F51A020E617B80037214B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		601F51A320E617B80037214B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		601F51A520E617B90037214B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		601F51AA20E617B90037214B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		601F51BA20E61EBA0037214B /* EmojiNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiNode.swift; sourceTree = "<group>"; };
 		601F51BB20E61EBA0037214B /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		B4EECA4EEE7CD06071F6663F /* Pods_Say_it__3D.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Say_it__3D.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,17 +39,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96C80B5B0D6E6D3DF1D86235 /* Pods_Say_it__3D.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		00A3A8F6F4004F2835093F6F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				41E49C6B8AAC480535CC16EB /* Pods-Say it! 3D.debug.xcconfig */,
+				245CC670E86E7C31C17EA46B /* Pods-Say it! 3D.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		601F519220E617B80037214B = {
 			isa = PBXGroup;
 			children = (
 				601F519D20E617B80037214B /* Say it! 3D */,
 				601F519C20E617B80037214B /* Products */,
+				00A3A8F6F4004F2835093F6F /* Pods */,
+				B9A35D20BAB29856FFC8BC5D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -61,7 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				601F519E20E617B80037214B /* AppDelegate.swift */,
-				601F51A020E617B80037214B /* EmojiBlingViewController.swift */,
+				601F51A020E617B80037214B /* ViewController.swift */,
 				601F51B920E61EBA0037214B /* SuperUsefulCode */,
 				601F51A220E617B80037214B /* Main.storyboard */,
 				601F51A520E617B90037214B /* Assets.xcassets */,
@@ -81,6 +97,14 @@
 			path = SuperUsefulCode;
 			sourceTree = "<group>";
 		};
+		B9A35D20BAB29856FFC8BC5D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B4EECA4EEE7CD06071F6663F /* Pods_Say_it__3D.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -88,9 +112,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 601F51AD20E617B90037214B /* Build configuration list for PBXNativeTarget "Say it! 3D" */;
 			buildPhases = (
+				BF3396988D4A4E0E72A192E5 /* [CP] Check Pods Manifest.lock */,
 				601F519720E617B80037214B /* Sources */,
 				601F519820E617B80037214B /* Frameworks */,
 				601F519920E617B80037214B /* Resources */,
+				9A9ABC3F009E6DB7E353214A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -147,6 +173,53 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		9A9ABC3F009E6DB7E353214A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Say it! 3D/Pods-Say it! 3D-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/RecordButton/RecordButton.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RecordButton.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Say it! 3D/Pods-Say it! 3D-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BF3396988D4A4E0E72A192E5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Say it! 3D-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		601F519720E617B80037214B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -154,7 +227,7 @@
 			files = (
 				601F51BD20E61EBA0037214B /* StringExtension.swift in Sources */,
 				5A37995F226929C50022957D /* IBInspectable.swift in Sources */,
-				601F51A120E617B80037214B /* EmojiBlingViewController.swift in Sources */,
+				601F51A120E617B80037214B /* ViewController.swift in Sources */,
 				601F51BC20E61EBA0037214B /* EmojiNode.swift in Sources */,
 				601F519F20E617B80037214B /* AppDelegate.swift in Sources */,
 			);
@@ -290,11 +363,12 @@
 		};
 		601F51AE20E617B90037214B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 41E49C6B8AAC480535CC16EB /* Pods-Say it! 3D.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4WWD59847Z;
-				INFOPLIST_FILE = "Emoji Bling/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Say it! 3D/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -308,11 +382,12 @@
 		};
 		601F51AF20E617B90037214B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 245CC670E86E7C31C17EA46B /* Pods-Say it! 3D.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4WWD59847Z;
-				INFOPLIST_FILE = "Emoji Bling/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Say it! 3D/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
