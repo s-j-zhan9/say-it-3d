@@ -16,25 +16,30 @@ class ViewController: UIViewController{
     let featureIndices = [[9], [1064], [42], [24, 25], [20]]
     
     //Record Button
-    var recordButton : RecordButton!
+    @IBOutlet var recordButton: RecordButton!
+//    var recordButton : RecordButton!
     var progressTimer : Timer!
     var progress : CGFloat! = 0
+    @IBOutlet weak var recordView: UIView!
     
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    //create record button
-    let recordButton = RecordButton(frame: CGRect(x: 0,y: 0,width: 70,height: 70))
-    view.addSubview(recordButton)
-    recordButton.center = self.view.center
+    
+    // set up recorder button
+    //recordButton = RecordButton(frame: CGRect(x: 0,y: 0,width: 70,height: 70))
+    recordButton.center = recordView.center
     recordButton.progressColor = .white
     recordButton.closeWhenFinished = false
-    //The recordButton needs a target for start and stopping the progress timer. Add this code after initialization of the recordButton (usualy in viewDidLoad())
     recordButton.addTarget(self, action: #selector(ViewController.record), for: .touchDown)
     recordButton.addTarget(self, action: #selector(ViewController.stop), for: UIControl.Event.touchUpInside)
-    recordButton.center.x = self.view.center.x
+    recordButton.center.x = recordView.center.x
+    recordButton.center.y = recordView.center.y
+
+    //view.addSubview(recordButton)
     
+
     //hide text input on launch
     textInputView.isHidden = true
     
@@ -59,27 +64,35 @@ class ViewController: UIViewController{
         return .lightContent
     }
     
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
     //////////////////////////////////////////////////////
     ////////////////record functions start////////////////
     
+
+
+//
     //record button func
     @objc func record() {
         self.progressTimer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(ViewController.updateProgress), userInfo: nil, repeats: true)
     }
-    
+
     @objc func updateProgress() {
-        
+
         let maxDuration = CGFloat(5) // Max duration of the recordButton
-        
+
         progress = progress + (CGFloat(0.05) / maxDuration)
         recordButton.setProgress(progress)
-        
+
         if progress >= 1 {
             progressTimer.invalidate()
         }
-        
+
     }
-    
+
     @objc func stop() {
         self.progressTimer.invalidate()
     }
@@ -185,6 +198,41 @@ class ViewController: UIViewController{
 }
 ///////////////////AR functions end///////////////////
 //////////////////////////////////////////////////////
+
+import RecordButton
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l < r
+    case (nil, _?):
+        return true
+    default:
+        return false
+    }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l >= r
+    default:
+        return !(lhs < rhs)
+    }
+}
+
+
+
+    
+
+    
+    
+    
+
+
 
 
 extension ViewController: ARSCNViewDelegate {

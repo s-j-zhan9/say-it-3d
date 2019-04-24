@@ -23,6 +23,21 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fam-Qr-BhN">
                                         <rect key="frame" x="20" y="539" width="335" height="36"/>
                                         <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qd2-P7-Kym" customClass="RecordButton" customModule="RecordButton">
+                                                <rect key="frame" x="132.5" y="-17" width="70" height="70"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="70" id="bxb-3J-S3e"/>
+                                                    <constraint firstAttribute="height" constant="70" id="o9j-8D-82i"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                        <real key="value" value="0.0"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                        <real key="value" value="0.0"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SLv-bU-agC">
                                                 <rect key="frame" x="20" y="0.0" width="36" height="36"/>
                                                 <constraints>
@@ -65,8 +80,10 @@
                                         <constraints>
                                             <constraint firstItem="xOD-hb-7al" firstAttribute="centerY" secondItem="Fam-Qr-BhN" secondAttribute="centerY" id="UOz-x4-uqv"/>
                                             <constraint firstItem="SLv-bU-agC" firstAttribute="centerY" secondItem="Fam-Qr-BhN" secondAttribute="centerY" id="aSo-QV-V3g"/>
+                                            <constraint firstItem="Qd2-P7-Kym" firstAttribute="centerX" secondItem="Fam-Qr-BhN" secondAttribute="centerX" id="diP-kC-4wb"/>
                                             <constraint firstAttribute="height" constant="36" id="pri-Xw-qdR"/>
                                             <constraint firstItem="SLv-bU-agC" firstAttribute="leading" secondItem="Fam-Qr-BhN" secondAttribute="leading" constant="20" id="scz-Pi-34Q"/>
+                                            <constraint firstItem="Qd2-P7-Kym" firstAttribute="centerY" secondItem="Fam-Qr-BhN" secondAttribute="centerY" id="sfM-Ly-VNl"/>
                                             <constraint firstAttribute="trailing" secondItem="xOD-hb-7al" secondAttribute="trailing" constant="20" id="tJV-sQ-A7t"/>
                                         </constraints>
                                     </view>
@@ -77,7 +94,7 @@
                                     <constraint firstItem="Fam-Qr-BhN" firstAttribute="leading" secondItem="ZBg-hD-6rY" secondAttribute="leading" constant="20" id="t8g-4u-x0E"/>
                                 </constraints>
                             </view>
-                            <view alpha="0.80000000000000004" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OS1-qg-JjP">
+                            <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OS1-qg-JjP">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wwb-fX-fra">
@@ -109,6 +126,7 @@
                                     <constraint firstItem="qcC-R3-UKZ" firstAttribute="centerX" secondItem="OS1-qg-JjP" secondAttribute="centerX" id="dBy-MN-8qY"/>
                                     <constraint firstItem="Wwb-fX-fra" firstAttribute="top" secondItem="OS1-qg-JjP" secondAttribute="top" constant="40" id="l24-l1-mU7"/>
                                     <constraint firstItem="qcC-R3-UKZ" firstAttribute="top" secondItem="OS1-qg-JjP" secondAttribute="top" constant="180" id="vE9-of-PbU"/>
+                                    <constraint firstItem="Wwb-fX-fra" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="OS1-qg-JjP" secondAttribute="leading" constant="20" symbolic="YES" id="x9B-Il-Cs1"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -116,12 +134,12 @@
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="ZBg-hD-6rY" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="0ck-pH-Ziy"/>
+                            <constraint firstItem="OS1-qg-JjP" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="7hE-RG-p8I"/>
+                            <constraint firstItem="OS1-qg-JjP" firstAttribute="bottom" secondItem="ZBg-hD-6rY" secondAttribute="bottom" id="8rB-T5-wuX"/>
+                            <constraint firstItem="ZBg-hD-6rY" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="A8Q-Zw-Oyk"/>
                             <constraint firstItem="OS1-qg-JjP" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="AIa-3k-hXH"/>
-                            <constraint firstItem="ZBg-hD-6rY" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" id="AOd-FZ-jpi"/>
                             <constraint firstItem="ZBg-hD-6rY" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="BhZ-mD-uvj"/>
                             <constraint firstItem="OS1-qg-JjP" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="D5D-gn-ZTc"/>
-                            <constraint firstItem="ZBg-hD-6rY" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="K37-fF-JvT"/>
-                            <constraint firstItem="ZBg-hD-6rY" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="Mgk-be-bdt"/>
                             <constraint firstItem="ZBg-hD-6rY" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="WPz-LT-O3o"/>
                             <constraint firstItem="OS1-qg-JjP" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" id="cdh-pt-IG5"/>
                         </constraints>
@@ -132,6 +150,8 @@
                     </view>
                     <connections>
                         <outlet property="messageField" destination="qcC-R3-UKZ" id="7ax-kE-2in"/>
+                        <outlet property="recordButton" destination="Qd2-P7-Kym" id="2JB-HX-zqS"/>
+                        <outlet property="recordView" destination="Fam-Qr-BhN" id="NIS-Fn-s7J"/>
                         <outlet property="sceneView" destination="8bC-Xf-vdC" id="Jck-as-3ag"/>
                         <outlet property="textInputView" destination="OS1-qg-JjP" id="qfR-dv-EYJ"/>
                     </connections>
