@@ -30,7 +30,7 @@
 
 import SceneKit
 
-class EmojiNode: SCNNode {
+class FaceNode: SCNNode {
   
   var options: [String]
   var index = 0
@@ -65,7 +65,7 @@ class EmojiNode: SCNNode {
 
 // MARK: - Custom functions
 
-extension EmojiNode {
+extension FaceNode {
   
   func updatePosition(for vectors: [vector_float3]) {
     let newPos = vectors.reduce(vector_float3(), +) / Float(vectors.count)

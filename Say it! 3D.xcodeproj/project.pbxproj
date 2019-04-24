@@ -13,7 +13,7 @@
 		601F51A120E617B80037214B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51A020E617B80037214B /* ViewController.swift */; };
 		601F51A420E617B80037214B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 601F51A220E617B80037214B /* Main.storyboard */; };
 		601F51A620E617B90037214B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 601F51A520E617B90037214B /* Assets.xcassets */; };
-		601F51BC20E61EBA0037214B /* EmojiNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51BA20E61EBA0037214B /* EmojiNode.swift */; };
+		601F51BC20E61EBA0037214B /* FaceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51BA20E61EBA0037214B /* FaceNode.swift */; };
 		601F51BD20E61EBA0037214B /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51BB20E61EBA0037214B /* StringExtension.swift */; };
 		96C80B5B0D6E6D3DF1D86235 /* Pods_Say_it__3D.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4EECA4EEE7CD06071F6663F /* Pods_Say_it__3D.framework */; };
 /* End PBXBuildFile section */
@@ -29,7 +29,7 @@
 		601F51A320E617B80037214B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		601F51A520E617B90037214B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		601F51AA20E617B90037214B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		601F51BA20E61EBA0037214B /* EmojiNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiNode.swift; sourceTree = "<group>"; };
+		601F51BA20E61EBA0037214B /* FaceNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceNode.swift; sourceTree = "<group>"; };
 		601F51BB20E61EBA0037214B /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		B4EECA4EEE7CD06071F6663F /* Pods_Say_it__3D.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Say_it__3D.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -78,7 +78,7 @@
 			children = (
 				601F519E20E617B80037214B /* AppDelegate.swift */,
 				601F51A020E617B80037214B /* ViewController.swift */,
-				601F51B920E61EBA0037214B /* SuperUsefulCode */,
+				601F51B920E61EBA0037214B /* Support Files */,
 				601F51A220E617B80037214B /* Main.storyboard */,
 				601F51A520E617B90037214B /* Assets.xcassets */,
 				18C7700921272F1A00134695 /* LaunchScreen.storyboard */,
@@ -87,14 +87,14 @@
 			path = "Say it! 3D";
 			sourceTree = "<group>";
 		};
-		601F51B920E61EBA0037214B /* SuperUsefulCode */ = {
+		601F51B920E61EBA0037214B /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				601F51BA20E61EBA0037214B /* EmojiNode.swift */,
+				601F51BA20E61EBA0037214B /* FaceNode.swift */,
 				601F51BB20E61EBA0037214B /* StringExtension.swift */,
 				5A37995E226929C50022957D /* IBInspectable.swift */,
 			);
-			path = SuperUsefulCode;
+			path = "Support Files";
 			sourceTree = "<group>";
 		};
 		B9A35D20BAB29856FFC8BC5D /* Frameworks */ = {
@@ -228,7 +228,7 @@
 				601F51BD20E61EBA0037214B /* StringExtension.swift in Sources */,
 				5A37995F226929C50022957D /* IBInspectable.swift in Sources */,
 				601F51A120E617B80037214B /* ViewController.swift in Sources */,
-				601F51BC20E61EBA0037214B /* EmojiNode.swift in Sources */,
+				601F51BC20E61EBA0037214B /* FaceNode.swift in Sources */,
 				601F519F20E617B80037214B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

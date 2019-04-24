@@ -5,6 +5,8 @@ import RecordButton
 
 class ViewController: UIViewController{
     @IBOutlet var sceneView: ARSCNView!
+    weak var viewController: UIViewController!
+
     @IBOutlet weak var textInputView: UIView!
     
     @IBOutlet weak var messageField: UITextField!
@@ -22,33 +24,45 @@ class ViewController: UIViewController{
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    //
-    //
     //create record button
     let recordButton = RecordButton(frame: CGRect(x: 0,y: 0,width: 70,height: 70))
     view.addSubview(recordButton)
     recordButton.center = self.view.center
-    recordButton.progressColor = .red
+    recordButton.progressColor = .white
     recordButton.closeWhenFinished = false
-    
     //The recordButton needs a target for start and stopping the progress timer. Add this code after initialization of the recordButton (usualy in viewDidLoad())
     recordButton.addTarget(self, action: #selector(ViewController.record), for: .touchDown)
     recordButton.addTarget(self, action: #selector(ViewController.stop), for: UIControl.Event.touchUpInside)
     recordButton.center.x = self.view.center.x
-
+    
+    //hide text input on launch
     textInputView.isHidden = true
     
     guard ARFaceTrackingConfiguration.isSupported else { fatalError() }
     sceneView.delegate = self
-
-    
   }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        //initiate AR tracking
+        let configuration = ARFaceTrackingConfiguration()
+        sceneView.session.run(configuration)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        sceneView.session.pause()
+    }
+    
+    //set status bar to white
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
-    //record functions
+    //////////////////////////////////////////////////////
+    ////////////////record functions start////////////////
+    
+    //record button func
     @objc func record() {
         self.progressTimer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(ViewController.updateProgress), userInfo: nil, repeats: true)
     }
@@ -70,15 +84,46 @@ class ViewController: UIViewController{
         self.progressTimer.invalidate()
     }
     
-    //text input
+    //process recording
     
+    func handleRecordStart(){
+        let recorder = RPScreenRecorder.shared()
+            recorder.startRecording { (error) in
+                guard error == nil else {
+                    print("Failed to start recording")
+                    return}
+        }
+    }
+    
+    func handleRecordEnd(){
+        let recorder = RPScreenRecorder.shared()
+
+        recorder.stopRecording { (previewController, error) in
+            guard error == nil else {
+                print("Failed to stop recording")
+                return
+            }
+        previewController?.previewControllerDelegate = self
+        self.viewController.present(previewController!, animated: true)
+        }
+    }
+    
+    /////////////////record functions end/////////////////
+    //////////////////////////////////////////////////////
+    
+    
+    
+    
+    //////////////////////////////////////////////////////
+    ////////////message input functions start/////////////
+    
+    //button to trigger text input view
     @IBAction func textInputButton(_ sender: Any) {
         textInputView.isHidden = false
         messageField.becomeFirstResponder()
-
-
     }
-    //submit recorded speach to array and refresh the array displayed on top
+    
+    //Done button to submit string into mouthOptions
     @IBAction func submitButton(_ sender: Any) {
         
         //add text field input to array
@@ -86,8 +131,8 @@ class ViewController: UIViewController{
         mouthOptions = [messageField.text as! String]
         
         // Update new Node Options
-        let emojiNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! EmojiNode
-        emojiNode.updateNewOptions(with: mouthOptions)
+        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+        faceNode.updateNewOptions(with: mouthOptions)
         //
         //show updated array
         //messageResult.text = mouthOptions.joined(separator:" - ")
@@ -99,27 +144,21 @@ class ViewController: UIViewController{
     //touch outside the message field to dismiss keyboard
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         messageField.resignFirstResponder()
-
     }
     
-    //initiate AR tracking
-    override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
+    /////////////message input functions end//////////////
+    //////////////////////////////////////////////////////
     
-    let configuration = ARFaceTrackingConfiguration()
     
-    sceneView.session.run(configuration)
-  }
-  
-  override func viewWillDisappear(_ animated: Bool) {
-    super.viewWillDisappear(animated)
     
-    sceneView.session.pause()
-  }
-  //use EmojiNode.swift to map facial features, and animate on jaw open
+    
+    //////////////////////////////////////////////////////
+    //////////////////AR functions start//////////////////
+
+  //use FaceNode.swift to map facial features, and animate on jaw open
   func updateFeatures(for node: SCNNode, using anchor: ARFaceAnchor) {
     for (feature, indices) in zip(features, featureIndices) {
-      let child = node.childNode(withName: feature, recursively: false) as? EmojiNode
+      let child = node.childNode(withName: feature, recursively: false) as? FaceNode
       let vertices = indices.map { anchor.geometry.vertices[$0] }
       child?.updatePosition(for: vertices)
       
@@ -132,17 +171,20 @@ class ViewController: UIViewController{
       }
     }
   }
+    
   //enable switching 
   @IBAction func handleTap(_ sender: UITapGestureRecognizer) {
     let location = sender.location(in: sceneView)
     let results = sceneView.hitTest(location, options: nil)
     if let result = results.first,
-      let node = result.node as? EmojiNode {
+      let node = result.node as? FaceNode {
       node.next()
     }
   }
     
 }
+///////////////////AR functions end///////////////////
+//////////////////////////////////////////////////////
 
 
 extension ViewController: ARSCNViewDelegate {
@@ -156,7 +198,7 @@ extension ViewController: ARSCNViewDelegate {
     node.geometry?.firstMaterial?.transparency = 0.0
     
     
-    let mouthNode = EmojiNode(with: mouthOptions)
+    let mouthNode = FaceNode(with: mouthOptions)
     mouthNode.name = "mouth"
     node.addChildNode(mouthNode)
     
@@ -181,5 +223,9 @@ extension ViewController: UITextFieldDelegate{
     
 }
 
-
+extension ViewController: RPPreviewViewControllerDelegate {
+    func previewControllerDidFinish(_ previewController: RPPreviewViewController) {
+        viewController.dismiss(animated: true)
+    }
+}
 
