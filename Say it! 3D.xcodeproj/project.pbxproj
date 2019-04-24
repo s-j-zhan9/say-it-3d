@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		18C7700A21272F1A00134695 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18C7700921272F1A00134695 /* LaunchScreen.storyboard */; };
+		5A1F0E1F22701C2200849E65 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1F0E1E22701C2200849E65 /* ShareViewController.swift */; };
 		5A37995F226929C50022957D /* IBInspectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A37995E226929C50022957D /* IBInspectable.swift */; };
 		601F519F20E617B80037214B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F519E20E617B80037214B /* AppDelegate.swift */; };
 		601F51A120E617B80037214B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51A020E617B80037214B /* ViewController.swift */; };
@@ -22,6 +23,7 @@
 		18C7700921272F1A00134695 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		245CC670E86E7C31C17EA46B /* Pods-Say it! 3D.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Say it! 3D.release.xcconfig"; path = "Target Support Files/Pods-Say it! 3D/Pods-Say it! 3D.release.xcconfig"; sourceTree = "<group>"; };
 		41E49C6B8AAC480535CC16EB /* Pods-Say it! 3D.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Say it! 3D.debug.xcconfig"; path = "Target Support Files/Pods-Say it! 3D/Pods-Say it! 3D.debug.xcconfig"; sourceTree = "<group>"; };
+		5A1F0E1E22701C2200849E65 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		5A37995E226929C50022957D /* IBInspectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IBInspectable.swift; sourceTree = "<group>"; };
 		601F519B20E617B80037214B /* Say it! 3D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Say it! 3D.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		601F519E20E617B80037214B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 				601F51A020E617B80037214B /* ViewController.swift */,
 				601F51B920E61EBA0037214B /* Support Files */,
 				601F51A220E617B80037214B /* Main.storyboard */,
+				5A1F0E1E22701C2200849E65 /* ShareViewController.swift */,
 				601F51A520E617B90037214B /* Assets.xcassets */,
 				18C7700921272F1A00134695 /* LaunchScreen.storyboard */,
 				601F51AA20E617B90037214B /* Info.plist */,
@@ -226,6 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A1F0E1F22701C2200849E65 /* ShareViewController.swift in Sources */,
 				601F51BD20E61EBA0037214B /* StringExtension.swift in Sources */,
 				5A37995F226929C50022957D /* IBInspectable.swift in Sources */,
 				601F51A120E617B80037214B /* ViewController.swift in Sources */,

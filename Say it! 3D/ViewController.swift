@@ -10,25 +10,23 @@ class ViewController: UIViewController{
     @IBOutlet weak var textInputView: UIView!
     
     @IBOutlet weak var messageField: UITextField!
-    var mouthOptions = ["Enter your Message"]
+    var mouthOptions = ["Say it"]
 
     let features = ["nose", "leftEye", "rightEye", "mouth", "hat"]
     let featureIndices = [[9], [1064], [42], [24, 25], [20]]
     
     //Record Button
     @IBOutlet var recordButton: RecordButton!
-//    var recordButton : RecordButton!
     var progressTimer : Timer!
     var progress : CGFloat! = 0
     @IBOutlet weak var recordView: UIView!
     
-  
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    
+    UITextField.appearance().keyboardAppearance = .dark
+
     // set up recorder button
-    //recordButton = RecordButton(frame: CGRect(x: 0,y: 0,width: 70,height: 70))
     recordButton.center = recordView.center
     recordButton.progressColor = .white
     recordButton.closeWhenFinished = false
@@ -36,12 +34,13 @@ class ViewController: UIViewController{
     recordButton.addTarget(self, action: #selector(ViewController.stop), for: UIControl.Event.touchUpInside)
     recordButton.center.x = recordView.center.x
     recordButton.center.y = recordView.center.y
-
-    //view.addSubview(recordButton)
     
 
-    //hide text input on launch
+    //hide textInputView on launch
     textInputView.isHidden = true
+    
+    //show recordView on launch
+    recordView.isHidden = false
     
     guard ARFaceTrackingConfiguration.isSupported else { fatalError() }
     sceneView.delegate = self
@@ -69,12 +68,17 @@ class ViewController: UIViewController{
         // Dispose of any resources that can be recreated.
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
     //////////////////////////////////////////////////////
     ////////////////record functions start////////////////
-    
 
-
-//
     //record button func
     @objc func record() {
         self.progressTimer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(ViewController.updateProgress), userInfo: nil, repeats: true)
@@ -95,6 +99,9 @@ class ViewController: UIViewController{
 
     @objc func stop() {
         self.progressTimer.invalidate()
+        progress = 0
+        performSegue(withIdentifier: "toShare", sender: self)
+
     }
     
     //process recording
@@ -106,6 +113,7 @@ class ViewController: UIViewController{
                     print("Failed to start recording")
                     return}
         }
+        
     }
     
     func handleRecordEnd(){
@@ -119,6 +127,7 @@ class ViewController: UIViewController{
         previewController?.previewControllerDelegate = self
         self.viewController.present(previewController!, animated: true)
         }
+        recordView.isHidden = true
     }
     
     /////////////////record functions end/////////////////
@@ -144,8 +153,9 @@ class ViewController: UIViewController{
         mouthOptions = [messageField.text as! String]
         
         // Update new Node Options
+        if messageField.text != "" {
         let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-        faceNode.updateNewOptions(with: mouthOptions)
+            faceNode.updateNewOptions(with: mouthOptions)}
         //
         //show updated array
         //messageResult.text = mouthOptions.joined(separator:" - ")
@@ -155,9 +165,9 @@ class ViewController: UIViewController{
         
     }
     //touch outside the message field to dismiss keyboard
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        messageField.resignFirstResponder()
-    }
+//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        messageField.resignFirstResponder()
+//    }
     
     /////////////message input functions end//////////////
     //////////////////////////////////////////////////////
@@ -199,7 +209,6 @@ class ViewController: UIViewController{
 ///////////////////AR functions end///////////////////
 //////////////////////////////////////////////////////
 
-import RecordButton
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
