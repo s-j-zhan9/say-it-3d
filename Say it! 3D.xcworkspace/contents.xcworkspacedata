@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Objective-CBridgingHeader.m">
+   </FileRef>
+   <FileRef
       location = "group:Objective-CBridgingHeader.h">
    </FileRef>
    <FileRef

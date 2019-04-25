@@ -6,6 +6,8 @@ target 'Say it! 3D' do
   use_frameworks!
 
 pod "RecordButton"
+pod "SceneKitVideoRecorder"
+
 
   # Pods for Say it! 3D
 	

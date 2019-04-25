@@ -2,6 +2,9 @@ import UIKit
 import ARKit
 import ReplayKit
 import RecordButton
+import SceneKit
+import SceneKitVideoRecorder
+import Photos
 
 class ViewController: UIViewController{
     @IBOutlet var sceneView: ARSCNView!
@@ -21,6 +24,8 @@ class ViewController: UIViewController{
     var progress : CGFloat! = 0
     @IBOutlet weak var recordView: UIView!
     
+    var recorder: SceneKitVideoRecorder?
+    
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -34,6 +39,10 @@ class ViewController: UIViewController{
     recordButton.addTarget(self, action: #selector(ViewController.stop), for: UIControl.Event.touchUpInside)
     recordButton.center.x = recordView.center.x
     recordButton.center.y = recordView.center.y
+    
+    //set up Scene Kit View Recorder to record ARSceneView
+    recorder = try! SceneKitVideoRecorder(withARSCNView: sceneView)
+
     
 
     //hide textInputView on launch
@@ -82,6 +91,11 @@ class ViewController: UIViewController{
     //record button func
     @objc func record() {
         self.progressTimer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(ViewController.updateProgress), userInfo: nil, repeats: true)
+        
+        //Scene kit video recorder
+        self.recorder?.startWriting().onSuccess {
+            print("Recording Started")
+        }
     }
 
     @objc func updateProgress() {
@@ -98,13 +112,53 @@ class ViewController: UIViewController{
     }
 
     @objc func stop() {
+        
+        //Record Button
         self.progressTimer.invalidate()
         progress = 0
-        performSegue(withIdentifier: "toShare", sender: self)
+        
+        //Scene kit video recorder
+        self.recorder?.finishWriting().onSuccess { [weak self] url in
+            print("Recording Finished", url)
+            self?.checkAuthorizationAndPresentActivityController(toShare: url, using: self!)
+        }
+        
+        //performSegue(withIdentifier: "toShare", sender: self)
 
     }
     
-    //process recording
+    //Sharesheet & acess to photo lib
+    private func checkAuthorizationAndPresentActivityController(toShare data: Any, using presenter: UIViewController) {
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .authorized:
+            let activityViewController = UIActivityViewController(activityItems: [data], applicationActivities: nil)
+            activityViewController.excludedActivityTypes = [UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.openInIBooks, UIActivity.ActivityType.print]
+            presenter.present(activityViewController, animated: true, completion: nil)
+        case .restricted, .denied:
+            let libraryRestrictedAlert = UIAlertController(title: "Photos access denied",
+                                                           message: "Please enable Photos access for this application in Settings > Privacy to allow saving screenshots.",
+                                                           preferredStyle: UIAlertController.Style.alert)
+            libraryRestrictedAlert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+            presenter.present(libraryRestrictedAlert, animated: true, completion: nil)
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization({ (authorizationStatus) in
+                if authorizationStatus == .authorized {
+                    let activityViewController = UIActivityViewController(activityItems: [data], applicationActivities: nil)
+                    activityViewController.excludedActivityTypes = [UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.openInIBooks, UIActivity.ActivityType.print]
+                    presenter.present(activityViewController, animated: true, completion: nil)
+                }
+            })
+        }
+    }
+    
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        let destVC = segue.destination as! ResultViewController
+//        destVC.questionEquation = myAnswer
+//        destVC.username = username
+//        destVC.answerValue = ""
+//    }
+    
+    //Replay Kit process recording
     
     func handleRecordStart(){
         let recorder = RPScreenRecorder.shared()
@@ -130,6 +184,32 @@ class ViewController: UIViewController{
         recordView.isHidden = true
     }
     
+    //scene kit video recorder
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        if recorder == nil {
+            var options = SceneKitVideoRecorder.Options.default
+            
+            let scale = UIScreen.main.nativeScale
+            let sceneSize = sceneView.bounds.size
+            options.videoSize = CGSize(width: sceneSize.width * scale, height: sceneSize.height * scale)
+            recorder = try! SceneKitVideoRecorder(withARSCNView: sceneView, options: options)
+        }
+    }
+    
+    @IBAction func startRecording (sender: UIButton) {
+        self.recorder?.startWriting().onSuccess {
+            print("Recording Started")
+        }
+    }
+    
+    @IBAction func stopRecording (sender: UIButton) {
+        self.recorder?.finishWriting().onSuccess { [weak self] url in
+            print("Recording Finished", url)
+        }
+    }
     /////////////////record functions end/////////////////
     //////////////////////////////////////////////////////
     
