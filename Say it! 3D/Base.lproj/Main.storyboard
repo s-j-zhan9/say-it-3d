@@ -182,14 +182,14 @@
         <scene sceneID="8bj-vo-iRM">
             <objects>
                 <viewController id="g2D-XN-R5N" customClass="ShareViewController" customModule="Say_it__3D" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="atE-O9-WDa">
+                    <view key="view" alpha="0.80000000000000004" contentMode="scaleToFill" id="atE-O9-WDa">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="q0I-QS-2kC">
-                                <rect key="frame" x="0.0" y="536" width="375" height="70"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q0I-QS-2kC">
+                                <rect key="frame" x="0.0" y="537" width="375" height="70"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kc5-r1-OTs">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kc5-r1-OTs">
                                         <rect key="frame" x="152.5" y="0.0" width="70" height="70"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="70" id="Azs-jl-Fyf"/>
@@ -204,8 +204,11 @@
                                                 <real key="value" value="0.0"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="handleSaveButton:" destination="g2D-XN-R5N" eventType="touchUpInside" id="hbJ-t4-N8K"/>
+                                        </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vow-Uy-qXv">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vow-Uy-qXv">
                                         <rect key="frame" x="56.5" y="17" width="36" height="36"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="36" id="lXL-zD-tm2"/>
@@ -217,10 +220,11 @@
                                             <color key="titleShadowColor" cocoaTouchSystemColor="darkTextColor"/>
                                         </state>
                                         <connections>
+                                            <action selector="handleIgButton:" destination="g2D-XN-R5N" eventType="touchUpInside" id="DOt-zc-zNx"/>
                                             <action selector="textInputButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hV9-HB-iqR"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4RL-LX-0tw">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4RL-LX-0tw">
                                         <rect key="frame" x="282.5" y="17" width="36" height="36"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="36" id="tPl-Jn-dmm"/>
@@ -242,6 +246,9 @@
                                                 <real key="value" value="2"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="handleShareButton:" destination="g2D-XN-R5N" eventType="touchUpInside" id="CyL-qk-oY7"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -265,9 +272,11 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="q0I-QS-2kC" firstAttribute="trailing" secondItem="15T-XM-2jT" secondAttribute="trailing" id="9yS-LA-As3"/>
                             <constraint firstItem="15T-XM-2jT" firstAttribute="bottom" secondItem="q0I-QS-2kC" secondAttribute="bottom" constant="60" id="cHZ-wf-DaY"/>
+                            <constraint firstItem="q0I-QS-2kC" firstAttribute="leading" secondItem="atE-O9-WDa" secondAttribute="leading" id="nAY-Hf-XGw"/>
                             <constraint firstItem="q0I-QS-2kC" firstAttribute="centerX" secondItem="atE-O9-WDa" secondAttribute="centerX" id="yaF-Iy-hAX"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="15T-XM-2jT"/>

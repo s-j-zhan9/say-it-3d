@@ -26,6 +26,9 @@ class ViewController: UIViewController{
     
     var recorder: SceneKitVideoRecorder?
     
+    //video url to pass
+    var videoUrl: URL?
+    
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -120,12 +123,19 @@ class ViewController: UIViewController{
         //Scene kit video recorder
         self.recorder?.finishWriting().onSuccess { [weak self] url in
             print("Recording Finished", url)
-            self?.checkAuthorizationAndPresentActivityController(toShare: url, using: self!)
-        }
-        
-        //performSegue(withIdentifier: "toShare", sender: self)
+            self?.videoUrl = url
+            self?.performSegue(withIdentifier: "toShare", sender: self)
 
+            //self?.checkAuthorizationAndPresentActivityController(toShare: url, using: self!)
+        }
+    
     }
+    
+        override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+            let destVC = segue.destination as! ShareViewController
+            destVC.videoUrl = self.videoUrl
+            
+        }
     
     //Sharesheet & acess to photo lib
     private func checkAuthorizationAndPresentActivityController(toShare data: Any, using presenter: UIViewController) {
@@ -151,12 +161,7 @@ class ViewController: UIViewController{
         }
     }
     
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        let destVC = segue.destination as! ResultViewController
-//        destVC.questionEquation = myAnswer
-//        destVC.username = username
-//        destVC.answerValue = ""
-//    }
+
     
     //Replay Kit process recording
     
