@@ -95,10 +95,19 @@ class ViewController: UIViewController{
     @objc func record() {
         self.progressTimer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(ViewController.updateProgress), userInfo: nil, repeats: true)
         
-        //Scene kit video recorder
-        self.recorder?.startWriting().onSuccess {
-            print("Recording Started")
-        }
+        //delay 0.5s
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            self.recorder?.startWriting().onSuccess {
+                print("Recording Started")
+            }
+        })
+        
+        //Scene kit video recorder (working)
+        
+//        self.recorder?.startWriting().onSuccess {
+//            print("Recording Started")
+//        }
     }
 
     @objc func updateProgress() {
@@ -131,63 +140,15 @@ class ViewController: UIViewController{
     
     }
     
-        override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
             let destVC = segue.destination as! ShareViewController
             destVC.videoUrl = self.videoUrl
-            
-        }
-    
-    //Sharesheet & acess to photo lib
-    private func checkAuthorizationAndPresentActivityController(toShare data: Any, using presenter: UIViewController) {
-        switch PHPhotoLibrary.authorizationStatus() {
-        case .authorized:
-            let activityViewController = UIActivityViewController(activityItems: [data], applicationActivities: nil)
-            activityViewController.excludedActivityTypes = [UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.openInIBooks, UIActivity.ActivityType.print]
-            presenter.present(activityViewController, animated: true, completion: nil)
-        case .restricted, .denied:
-            let libraryRestrictedAlert = UIAlertController(title: "Photos access denied",
-                                                           message: "Please enable Photos access for this application in Settings > Privacy to allow saving screenshots.",
-                                                           preferredStyle: UIAlertController.Style.alert)
-            libraryRestrictedAlert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
-            presenter.present(libraryRestrictedAlert, animated: true, completion: nil)
-        case .notDetermined:
-            PHPhotoLibrary.requestAuthorization({ (authorizationStatus) in
-                if authorizationStatus == .authorized {
-                    let activityViewController = UIActivityViewController(activityItems: [data], applicationActivities: nil)
-                    activityViewController.excludedActivityTypes = [UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.openInIBooks, UIActivity.ActivityType.print]
-                    presenter.present(activityViewController, animated: true, completion: nil)
-                }
-            })
-        }
     }
     
 
     
-    //Replay Kit process recording
     
-    func handleRecordStart(){
-        let recorder = RPScreenRecorder.shared()
-            recorder.startRecording { (error) in
-                guard error == nil else {
-                    print("Failed to start recording")
-                    return}
-        }
-        
-    }
     
-    func handleRecordEnd(){
-        let recorder = RPScreenRecorder.shared()
-
-        recorder.stopRecording { (previewController, error) in
-            guard error == nil else {
-                print("Failed to stop recording")
-                return
-            }
-        previewController?.previewControllerDelegate = self
-        self.viewController.present(previewController!, animated: true)
-        }
-        recordView.isHidden = true
-    }
     
     //scene kit video recorder
     
@@ -203,18 +164,7 @@ class ViewController: UIViewController{
             recorder = try! SceneKitVideoRecorder(withARSCNView: sceneView, options: options)
         }
     }
-    
-    @IBAction func startRecording (sender: UIButton) {
-        self.recorder?.startWriting().onSuccess {
-            print("Recording Started")
-        }
-    }
-    
-    @IBAction func stopRecording (sender: UIButton) {
-        self.recorder?.finishWriting().onSuccess { [weak self] url in
-            print("Recording Finished", url)
-        }
-    }
+
     /////////////////record functions end/////////////////
     //////////////////////////////////////////////////////
     
@@ -241,12 +191,21 @@ class ViewController: UIViewController{
         if messageField.text != "" {
         let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
             faceNode.updateNewOptions(with: mouthOptions)}
-        //
+
         //show updated array
         //messageResult.text = mouthOptions.joined(separator:" - ")
         messageField.text = ""
         messageField.resignFirstResponder()
         textInputView.isHidden = true
+        
+    }
+    @IBAction func handleChangeStyle(_ sender: Any) {
+
+        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+        faceNode.fontSize = 8
+        faceNode.bgContent = .red
+        faceNode.updateNewOptions(with: mouthOptions)
+
         
     }
     //touch outside the message field to dismiss keyboard

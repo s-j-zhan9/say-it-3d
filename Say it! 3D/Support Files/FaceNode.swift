@@ -34,6 +34,9 @@ class FaceNode: SCNNode {
   
   var options: [String]
   var index = 0
+    
+    var fontSize: CGFloat = 20;
+    var bgContent: UIColor = .black
   
   init(with options: [String], width: CGFloat = 0.06, height: CGFloat = 0.06) {
     self.options = options
@@ -41,8 +44,18 @@ class FaceNode: SCNNode {
     super.init()
     
     let plane = SCNPlane(width: width, height: height)
-    plane.firstMaterial?.diffuse.contents = (options.first ?? " ").image()
+    plane.firstMaterial?.diffuse.contents = (options.first ?? " ").image(fontSize)
     plane.firstMaterial?.isDoubleSided = true
+    
+    
+    let bgPlane = SCNPlane(width: width, height: height)
+    bgPlane.firstMaterial?.diffuse.contents = bgContent
+    
+    let bgPlaneNode = SCNNode()
+    bgPlaneNode.geometry = bgPlane
+    
+    self.addChildNode(bgPlaneNode)
+    bgPlaneNode.position.z = 0
     
     geometry = plane
   }
@@ -55,8 +68,18 @@ class FaceNode: SCNNode {
         self.options = options
 
         let plane = SCNPlane(width: width, height: height)
-        plane.firstMaterial?.diffuse.contents = (options.first ?? " ").image()
+        plane.firstMaterial?.diffuse.contents = (options.first ?? " ").image(fontSize)
         plane.firstMaterial?.isDoubleSided = true
+        
+        
+        let bgPlane = SCNPlane(width: width, height: height)
+        bgPlane.firstMaterial?.diffuse.contents = bgContent
+        
+        let bgPlaneNode = SCNNode()
+        bgPlaneNode.geometry = bgPlane
+        
+        self.addChildNode(bgPlaneNode)
+        bgPlaneNode.position.z = 0
         
         geometry = plane
     }
@@ -76,13 +99,13 @@ extension FaceNode {
     index = (index + 1) % options.count
     
     if let plane = geometry as? SCNPlane {
-      plane.firstMaterial?.diffuse.contents = options[index].image()
+      plane.firstMaterial?.diffuse.contents = options[index].image(fontSize)
       plane.firstMaterial?.isDoubleSided = true
     }
   }
   func update(){
     if let plane = geometry as? SCNPlane {
-    plane.firstMaterial?.diffuse.contents = (options.first ?? " ").image()
+    plane.firstMaterial?.diffuse.contents = (options.first ?? " ").image(fontSize)
     plane.firstMaterial?.isDoubleSided = true
     }
   }

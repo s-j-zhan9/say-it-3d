@@ -33,8 +33,10 @@
 import UIKit
 
 extension String {
-  
-  func image() -> UIImage? {
+    
+    
+    
+    func image(_: CGFloat) -> UIImage? {
     
     let size = CGSize(width: 480, height: 88)
     
