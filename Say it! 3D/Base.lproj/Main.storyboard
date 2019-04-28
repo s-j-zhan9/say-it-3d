@@ -185,7 +185,7 @@
         <scene sceneID="8bj-vo-iRM">
             <objects>
                 <viewController id="g2D-XN-R5N" customClass="ShareViewController" customModule="Say_it__3D" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" alpha="0.80000000000000004" contentMode="scaleToFill" id="atE-O9-WDa">
+                    <view key="view" contentMode="scaleToFill" id="atE-O9-WDa">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -275,7 +275,6 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="q0I-QS-2kC" firstAttribute="trailing" secondItem="15T-XM-2jT" secondAttribute="trailing" id="9yS-LA-As3"/>
                             <constraint firstItem="15T-XM-2jT" firstAttribute="bottom" secondItem="q0I-QS-2kC" secondAttribute="bottom" constant="60" id="cHZ-wf-DaY"/>

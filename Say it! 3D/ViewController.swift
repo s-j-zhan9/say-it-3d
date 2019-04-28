@@ -29,6 +29,8 @@ class ViewController: UIViewController{
     //video url to pass
     var videoUrl: URL?
     
+    var animSize: Float = 1
+    
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -97,7 +99,7 @@ class ViewController: UIViewController{
         
         //delay 0.5s
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
             self.recorder?.startWriting().onSuccess {
                 print("Recording Started")
             }
@@ -205,6 +207,7 @@ class ViewController: UIViewController{
         faceNode.fontSize = 8
         faceNode.bgContent = .red
         faceNode.updateNewOptions(with: mouthOptions)
+        self.animSize = 3
 
         
     }
@@ -232,7 +235,7 @@ class ViewController: UIViewController{
       switch feature {
       case "mouth":
         let jawOpenValue = anchor.blendShapes[.jawOpen]?.floatValue ?? 0.2
-        child?.scale = SCNVector3(1 + jawOpenValue*6, 0.1 + jawOpenValue*2, 0.1)
+        child?.scale = SCNVector3(self.animSize + jawOpenValue*6, self.animSize/10 + jawOpenValue*2, 0.1)
       default:
         break
       }
