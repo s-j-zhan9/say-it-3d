@@ -80,9 +80,9 @@
 			children = (
 				601F519E20E617B80037214B /* AppDelegate.swift */,
 				601F51A020E617B80037214B /* ViewController.swift */,
+				5A1F0E1E22701C2200849E65 /* ShareViewController.swift */,
 				601F51B920E61EBA0037214B /* Support Files */,
 				601F51A220E617B80037214B /* Main.storyboard */,
-				5A1F0E1E22701C2200849E65 /* ShareViewController.swift */,
 				601F51A520E617B90037214B /* Assets.xcassets */,
 				18C7700921272F1A00134695 /* LaunchScreen.storyboard */,
 				601F51AA20E617B90037214B /* Info.plist */,

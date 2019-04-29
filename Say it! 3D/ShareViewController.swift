@@ -20,9 +20,19 @@ class ShareViewController: UIViewController {
     
     var videoUrl : URL!
     var playerLooper: AVPlayerLooper!
-
+    var playerLayer: AVPlayerLayer!
+    @IBOutlet weak var sharePanel: UIView!
+    @IBOutlet weak var playView: UIView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        sharePanel.layer.shadowColor = UIColor.black.cgColor
+        sharePanel.layer.shadowOpacity = 0.2
+        sharePanel.layer.shadowOffset = CGSize(width: 0, height: 0)
+        sharePanel.layer.shadowRadius = 2
+        
         if videoUrl != nil {
             print("printing url from shareview:\(String(describing: videoUrl))")}
         loopVideo()
@@ -41,21 +51,58 @@ class ShareViewController: UIViewController {
         player.play()
     }
     
+    private func loopVideo2() {
+        let player = AVPlayer(url: self.videoUrl!)
+        let playerLayer = AVPlayerLayer(player: player)
+        //set up player layer
+        playerLayer.frame = CGRect(x: 0,y: 0,width: self.view.frame.width * 0.98,height: self.view.frame.height * 0.98)
+        //playerLayer.position = self.view.center
+        playerLayer.position = CGPoint(x: self.view.bounds.midX, y: self.view.bounds.midY)
+        
+        playerLayer.shadowColor = UIColor.black.cgColor
+        playerLayer.shadowOpacity = 1
+        playerLayer.shadowOffset = CGSize.zero
+        playerLayer.shadowRadius = 10
+
+        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime,
+                                               object: nil,
+                                               queue: nil) { [weak self] note in
+                                                player.seek(to: CMTime.zero)
+                                                player.play()
+        }
+        
+//        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: nil) { (_) in
+//            player.seek(to: CMTime.zero)
+//            player.play()
+//            }
+        self.view.layer.addSublayer(playerLayer)
+        }
+    
     private func loopVideo() {
         let asset = AVAsset(url: self.videoUrl)
         let playerItem = AVPlayerItem(asset: asset)
         let queuePlayer = AVQueuePlayer(playerItem: playerItem)
-        // Create a new player looper with the queue player and template item
-        playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem)
-    
-        
-        let playerLayer = AVPlayerLayer(player: queuePlayer)
-        playerLayer.frame = CGRect(x: 0,y: 0,width: self.view.frame.width * 0.65,height: self.view.frame.height * 0.65)
-        playerLayer.position = self.view.center
-        self.view.layer.addSublayer(playerLayer)
-        
         // Begin looping playback
         queuePlayer.play()
+        playerLayer = AVPlayerLayer(player: queuePlayer)
+
+        // Create a new player looper with the queue player and template item
+        playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem)
+        
+        //set up player layer
+        playerLayer.frame = CGRect(x: 0,y: 0,width: self.playView.frame.width, height: self.playView.frame.height)
+        //playerLayer.position = self.view.center
+        playerLayer.position = CGPoint(x: self.playView.bounds.midX, y: self.playView.bounds.midY)
+        
+        playerLayer.shadowColor = UIColor.black.cgColor
+        playerLayer.shadowOpacity = 0.1
+        playerLayer.shadowOffset = CGSize(width: 0, height: 1)
+        playerLayer.shadowRadius = 2
+        self.playView.layer.addSublayer(playerLayer)
+
+        print("playerLayer created")
+        
+        
     }
     
     @IBAction func handleCloseButton(_ sender: Any) {
@@ -65,9 +112,37 @@ class ShareViewController: UIViewController {
     
     
     @IBAction func handleIgButton(_ sender: Any) {
+        
+        
         print("ig button clicked")
 
     }
+    
+    //send to instagram: https://developers.facebook.com/docs/instagram/sharing-to-stories/
+//    - (void)shareBackgroundImage {
+//    [self backgroundImage:UIImagePNGRepresentation([UIImage imageNamed:@"backgroundImage"])
+//    attributionURL:@"http://your-deep-link-url"];
+//    }
+//
+//    - (void)backgroundImage:(NSData *)backgroundImage
+//    attributionURL:(NSString *)attributionURL {
+//
+//    // Verify app can open custom URL scheme, open if able
+//    NSURL *urlScheme = [NSURL URLWithString:@"instagram-stories://share"];
+//    if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
+//
+//    // Assign background image asset and attribution link URL to pasteboard
+//    NSArray *pasteboardItems = @[@{@"com.instagram.sharedSticker.backgroundImage" : backgroundImage,
+//    @"com.instagram.sharedSticker.contentURL" : attributionURL}];
+//    NSDictionary *pasteboardOptions = @{UIPasteboardOptionExpirationDate : [[NSDate date] dateByAddingTimeInterval:60 * 5]};
+//    // This call is iOS 10+, can use 'setItems' depending on what versions you support
+//    [[UIPasteboard generalPasteboard] setItems:pasteboardItems options:pasteboardOptions];
+//
+//    [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
+//    } else {
+//    // Handle older app versions or app not installed case
+//    }
+//    }
     
     @IBAction func handleSaveButton(_ sender: Any) {
         

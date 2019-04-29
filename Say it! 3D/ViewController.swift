@@ -26,9 +26,11 @@ class ViewController: UIViewController{
     
     var recorder: SceneKitVideoRecorder?
     
+    //text size
+    @IBOutlet weak var textSizeButton: UIButton!
+    
     //video url to pass
     var videoUrl: URL?
-    
     var animSize: Float = 1
     
   override func viewDidLoad() {
@@ -48,7 +50,8 @@ class ViewController: UIViewController{
     //set up Scene Kit View Recorder to record ARSceneView
     recorder = try! SceneKitVideoRecorder(withARSCNView: sceneView)
 
-    
+    textSizeButton.titleLabel!.text = "M"
+
 
     //hide textInputView on launch
     textInputView.isHidden = true
@@ -97,9 +100,9 @@ class ViewController: UIViewController{
     @objc func record() {
         self.progressTimer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(ViewController.updateProgress), userInfo: nil, repeats: true)
         
-        //delay 0.5s
+        //delay 0.3s
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
             self.recorder?.startWriting().onSuccess {
                 print("Recording Started")
             }
@@ -201,16 +204,7 @@ class ViewController: UIViewController{
         textInputView.isHidden = true
         
     }
-    @IBAction func handleChangeStyle(_ sender: Any) {
 
-        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-        faceNode.fontSize = 8
-        faceNode.bgContent = .red
-        faceNode.updateNewOptions(with: mouthOptions)
-        self.animSize = 3
-
-        
-    }
     //touch outside the message field to dismiss keyboard
 //    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 //        messageField.resignFirstResponder()
@@ -220,6 +214,37 @@ class ViewController: UIViewController{
     //////////////////////////////////////////////////////
     
     
+    @IBAction func HandleTextSizeButton(_ sender: Any) {
+        
+//        var textSizeState = 2
+        
+        if(textSizeButton.titleLabel!.text == "M"){
+            //let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            //faceNode.fontSize = 8
+            //faceNode.bgContent = .red
+            //faceNode.updateNewOptions(with: mouthOptions)
+            self.animSize = 3
+        
+            textSizeButton.titleLabel!.text = "L"
+        } else if (textSizeButton.titleLabel!.text == "L"){
+            self.animSize = 0.3
+            
+            textSizeButton.titleLabel!.text = "S"
+        }else if (textSizeButton.titleLabel!.text == "S"){
+            self.animSize = 1
+            
+            textSizeButton.titleLabel!.text = "M"
+        }
+        
+//        if (textSizeState == 1){
+//            textSizeButton.titleLabel!.text = "S"
+//        } else if (textSizeState == 2){
+//            textSizeButton.titleLabel!.text = "M"
+//        } else if (textSizeState == 3){
+//            textSizeButton.titleLabel!.text = "L"
+//        }
+        
+    }
     
     
     //////////////////////////////////////////////////////
@@ -235,7 +260,7 @@ class ViewController: UIViewController{
       switch feature {
       case "mouth":
         let jawOpenValue = anchor.blendShapes[.jawOpen]?.floatValue ?? 0.2
-        child?.scale = SCNVector3(self.animSize + jawOpenValue*6, self.animSize/10 + jawOpenValue*2, 0.1)
+        child?.scale = SCNVector3(self.animSize + jawOpenValue*6, self.animSize/8 + jawOpenValue*2, 0.1)
       default:
         break
       }
