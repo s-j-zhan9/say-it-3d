@@ -28,6 +28,7 @@ class ViewController: UIViewController{
     
     //text size
     @IBOutlet weak var textSizeButton: UIButton!
+    var textSizeState = 2
     
     //video url to pass
     var videoUrl: URL?
@@ -37,6 +38,8 @@ class ViewController: UIViewController{
     super.viewDidLoad()
     
     UITextField.appearance().keyboardAppearance = .dark
+    
+    textSizeButton.adjustsImageWhenHighlighted = false
 
     // set up recorder button
     recordButton.center = recordView.center
@@ -50,7 +53,6 @@ class ViewController: UIViewController{
     //set up Scene Kit View Recorder to record ARSceneView
     recorder = try! SceneKitVideoRecorder(withARSCNView: sceneView)
 
-    textSizeButton.titleLabel!.text = "M"
 
 
     //hide textInputView on launch
@@ -214,9 +216,8 @@ class ViewController: UIViewController{
     //////////////////////////////////////////////////////
     
     
-    @IBAction func HandleTextSizeButton(_ sender: Any) {
+    @IBAction func HandleTextSizeButton(_ sender: UIButton) {
         
-//        var textSizeState = 2
         
         if(textSizeButton.titleLabel!.text == "M"){
             //let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
@@ -224,26 +225,48 @@ class ViewController: UIViewController{
             //faceNode.bgContent = .red
             //faceNode.updateNewOptions(with: mouthOptions)
             self.animSize = 3
-        
-            textSizeButton.titleLabel!.text = "L"
+
+        sender.setTitle("L", for: .normal)
         } else if (textSizeButton.titleLabel!.text == "L"){
             self.animSize = 0.3
-            
-            textSizeButton.titleLabel!.text = "S"
+
+            sender.setTitle("S", for: .normal)
         }else if (textSizeButton.titleLabel!.text == "S"){
             self.animSize = 1
-            
-            textSizeButton.titleLabel!.text = "M"
+
+            sender.setTitle("M", for: .normal)
         }
         
-//        if (textSizeState == 1){
-//            textSizeButton.titleLabel!.text = "S"
-//        } else if (textSizeState == 2){
-//            textSizeButton.titleLabel!.text = "M"
-//        } else if (textSizeState == 3){
-//            textSizeButton.titleLabel!.text = "L"
-//        }
         
+//        if(textSizeState == 2){
+//            //let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+//            //faceNode.fontSize = 8
+//            //faceNode.bgContent = .red
+//            //faceNode.updateNewOptions(with: mouthOptions)
+//            self.animSize = 3
+//
+//            textSizeState = 3
+//        } else if (textSizeState == 3){
+//            self.animSize = 0.3
+//
+//            textSizeState = 1
+//        }else if (textSizeState == 1){
+//            self.animSize = 1
+//
+//            textSizeState = 2
+//        }
+//
+//        if (textSizeState == 1){
+//            sender.setTitle("S", for: .normal)
+//            print("changed to \(textSizeButton.titleLabel!.text)")
+//        } else if (textSizeState == 2){
+//            sender.setTitle("M", for: .normal)
+//            print("changed to \(textSizeButton.titleLabel!.text)")
+//        } else if (textSizeState == 3){
+//            sender.setTitle("L", for: .normal)
+//            print("changed to \(textSizeButton.titleLabel!.text)")
+//        }
+//
     }
     
     

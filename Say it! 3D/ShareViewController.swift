@@ -23,10 +23,16 @@ class ShareViewController: UIViewController {
     var playerLayer: AVPlayerLayer!
     @IBOutlet weak var sharePanel: UIView!
     @IBOutlet weak var playView: UIView!
+    @IBOutlet weak var infoButton: UIButton!
+    @IBOutlet weak var infoView: UIView!
+    @IBOutlet weak var closeInfoButton: UIButton!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        infoButton.isHidden = false
+        infoView.isHidden = true
         
         sharePanel.layer.shadowColor = UIColor.black.cgColor
         sharePanel.layer.shadowOpacity = 0.2
@@ -107,7 +113,6 @@ class ShareViewController: UIViewController {
     
     @IBAction func handleCloseButton(_ sender: Any) {
         dismiss(animated: true, completion: nil)
-
     }
     
     
@@ -177,14 +182,20 @@ class ShareViewController: UIViewController {
         }
     }
     
-    /*
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @IBAction func handleInfoButton(_ sender: Any) {
+        infoButton.isHidden = true
+        infoView.isHidden = false
+        //let infoView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
+//        infoView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+//        infoView.center = self.view.center
+//        self.view.addSubview(infoView)
+        
+
     }
-    */
-
+    
+    @IBAction func handleCloseInfoButton(_ sender: Any) {
+        infoButton.isHidden = false
+        infoView.isHidden = true
+    }
 }
