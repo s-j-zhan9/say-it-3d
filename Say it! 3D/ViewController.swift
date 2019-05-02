@@ -18,6 +18,9 @@ class ViewController: UIViewController{
     let features = ["nose", "leftEye", "rightEye", "mouth", "hat"]
     let featureIndices = [[9], [1064], [42], [24, 25], [20]]
     
+    
+    @IBOutlet weak var fontButton: UIButton!
+    
     //Record Button
     @IBOutlet var recordButton: RecordButton!
     var progressTimer : Timer!
@@ -28,7 +31,7 @@ class ViewController: UIViewController{
     
     //text size
     @IBOutlet weak var textSizeButton: UIButton!
-    var textSizeState = 2
+    //var textSizeState = 2
     
     //video url to pass
     var videoUrl: URL?
@@ -235,24 +238,54 @@ class ViewController: UIViewController{
         submitText()
     }
     
-    func changeTextToLarge(){
-        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+    
+    @IBAction func handleFontButton(_ sender: UIButton) {
         
-        messageField.font = UIFont(name: "Verdana", size: 20)
-        var bgSize = CGSize(width: messageField.bounds.height, height: messageField.bounds.height)
-        faceNode.bgSize = bgSize
-        faceNode.fontFace = "Verdana"
-        faceNode.fontColor = .blue
-        faceNode.updateNewOptions(with: mouthOptions)
+        if(fontButton.titleLabel!.text == "REGULAR" && messageField.text != ""){
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "AvenirNextCondensed-Heavy"
+            faceNode.updateNewOptions(with: mouthOptions)
+
+            sender.setTitle("BOLD", for: .normal)
+        } else if (fontButton.titleLabel!.text == "BOLD" && messageField.text != ""){
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "AmericanTypewriter"
+            faceNode.updateNewOptions(with: mouthOptions)
+            
+            sender.setTitle("MONO", for: .normal)
+        }else if (fontButton.titleLabel!.text == "MONO" && messageField.text != ""){
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "Avenir-Medium"
+            faceNode.updateNewOptions(with: mouthOptions)
+            
+            sender.setTitle("REGULAR", for: .normal)
+        }
+        
+    }
+
+    @IBAction func handleWhiteButton(_ sender: Any) {
+        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+        faceNode.fontColor = .white
+    }
+    
+    @IBAction func handleBlackButton(_ sender: Any) {
+        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+        faceNode.fontColor = .black
+    }
+    
+    @IBAction func handleRedButton(_ sender: Any) {
+        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+        faceNode.fontColor = .red
     }
     
     
-   // @IBAction func handleChangeTextButton(_ sender: Any) {
-//        changeTextToLarge()
-//    }
-
-    /////////////message input functions end//////////////
-    //////////////////////////////////////////////////////
+    @IBAction func handleYellowButton(_ sender: Any) {
+        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+        faceNode.fontColor = .red
+    }
+    
+    
+    
     
     
     @IBAction func HandleTextSizeButton(_ sender: UIButton) {
