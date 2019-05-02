@@ -32,7 +32,12 @@ class ViewController: UIViewController{
     
     //video url to pass
     var videoUrl: URL?
-    var animSize: Float = 1
+    
+    //base size of animation
+    var animSize: Float = 1.3
+    
+    //magnitude of animation
+    var animMag: Float = 1.5
     
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -52,17 +57,19 @@ class ViewController: UIViewController{
     
     //set up Scene Kit View Recorder to record ARSceneView
     recorder = try! SceneKitVideoRecorder(withARSCNView: sceneView)
-
+    
+    messageField.text = "Say it"
 
 
     //hide textInputView on launch
     textInputView.isHidden = true
     
     //show recordView on launch
-    recordView.isHidden = false
+    //recordView.isHidden = false
     
     guard ARFaceTrackingConfiguration.isSupported else { fatalError() }
     sceneView.delegate = self
+
   }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -181,37 +188,69 @@ class ViewController: UIViewController{
     //////////////////////////////////////////////////////
     ////////////message input functions start/////////////
     
-    //button to trigger text input view
-    @IBAction func textInputButton(_ sender: Any) {
+    func startTextInput(){
         textInputView.isHidden = false
         messageField.becomeFirstResponder()
+        //hide auto suggestion
+        messageField.autocorrectionType = .no
     }
     
-    //Done button to submit string into mouthOptions
-    @IBAction func submitButton(_ sender: Any) {
-        
+    //button to trigger text input view
+    @IBAction func textInputButton(_ sender: Any) {
+        startTextInput()
+    }
+    
+    //tap to trigger text input view
+    @IBAction func handleTap(_ sender: UITapGestureRecognizer) {
+        //    let location = sender.location(in: sceneView)
+        //    let results = sceneView.hitTest(location, options: nil)
+        //    if let result = results.first,
+        //      let node = result.node as? FaceNode {
+        //      node.next()
+        //    }
+        guard sender.view != nil else { return }
+        startTextInput()
+    }
+    
+    func submitText(){
         //add text field input to array
         //mouthOptions.insert(messageField.text as! String, at: 0)
-        mouthOptions = [messageField.text as! String]
         
         // Update new Node Options
         if messageField.text != "" {
-        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            mouthOptions = [messageField.text as! String]
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
             faceNode.updateNewOptions(with: mouthOptions)}
-
-        //show updated array
-        //messageResult.text = mouthOptions.joined(separator:" - ")
-        messageField.text = ""
+        
         messageField.resignFirstResponder()
         textInputView.isHidden = true
-        
     }
-
-    //touch outside the message field to dismiss keyboard
-//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        messageField.resignFirstResponder()
-//    }
     
+    //OK button to submit string into mouthOptions
+    @IBAction func handleSubmitButton(_ sender: Any) {
+        submitText()
+    }
+    //tap gesture to submit string
+    @IBAction func handleTapToSubmit(_ sender: Any) {
+        submitText()
+    }
+    
+    func changeTextToLarge(){
+        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+        
+        messageField.font = UIFont(name: "Verdana", size: 20)
+        var bgSize = CGSize(width: messageField.bounds.height, height: messageField.bounds.height)
+        faceNode.bgSize = bgSize
+        faceNode.fontFace = "Verdana"
+        faceNode.fontColor = .blue
+        faceNode.updateNewOptions(with: mouthOptions)
+    }
+    
+    
+   // @IBAction func handleChangeTextButton(_ sender: Any) {
+//        changeTextToLarge()
+//    }
+
     /////////////message input functions end//////////////
     //////////////////////////////////////////////////////
     
@@ -219,54 +258,36 @@ class ViewController: UIViewController{
     @IBAction func HandleTextSizeButton(_ sender: UIButton) {
         
         
-        if(textSizeButton.titleLabel!.text == "M"){
-            //let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            //faceNode.fontSize = 8
-            //faceNode.bgContent = .red
-            //faceNode.updateNewOptions(with: mouthOptions)
+        if(textSizeButton.titleLabel!.text == "M" && messageField.text != ""){
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "AvenirNextCondensed-Heavy"
+            faceNode.fontColor = .red
+            faceNode.updateNewOptions(with: mouthOptions)
+
             self.animSize = 3
+            self.animMag = 1.5
 
         sender.setTitle("L", for: .normal)
-        } else if (textSizeButton.titleLabel!.text == "L"){
-            self.animSize = 0.3
+        } else if (textSizeButton.titleLabel!.text == "L" && messageField.text != ""){
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "AmericanTypewriter"
+            faceNode.fontColor = .yellow
+            faceNode.updateNewOptions(with: mouthOptions)
+            self.animSize = 0.7
+            self.animMag = 1
 
             sender.setTitle("S", for: .normal)
-        }else if (textSizeButton.titleLabel!.text == "S"){
-            self.animSize = 1
+        }else if (textSizeButton.titleLabel!.text == "S" && messageField.text != ""){
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "Avenir-Medium"
+            faceNode.fontColor = .white
+            faceNode.updateNewOptions(with: mouthOptions)
+            self.animSize = 1.3
+            self.animMag = 1.5
 
             sender.setTitle("M", for: .normal)
         }
         
-        
-//        if(textSizeState == 2){
-//            //let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-//            //faceNode.fontSize = 8
-//            //faceNode.bgContent = .red
-//            //faceNode.updateNewOptions(with: mouthOptions)
-//            self.animSize = 3
-//
-//            textSizeState = 3
-//        } else if (textSizeState == 3){
-//            self.animSize = 0.3
-//
-//            textSizeState = 1
-//        }else if (textSizeState == 1){
-//            self.animSize = 1
-//
-//            textSizeState = 2
-//        }
-//
-//        if (textSizeState == 1){
-//            sender.setTitle("S", for: .normal)
-//            print("changed to \(textSizeButton.titleLabel!.text)")
-//        } else if (textSizeState == 2){
-//            sender.setTitle("M", for: .normal)
-//            print("changed to \(textSizeButton.titleLabel!.text)")
-//        } else if (textSizeState == 3){
-//            sender.setTitle("L", for: .normal)
-//            print("changed to \(textSizeButton.titleLabel!.text)")
-//        }
-//
     }
     
     
@@ -283,22 +304,13 @@ class ViewController: UIViewController{
       switch feature {
       case "mouth":
         let jawOpenValue = anchor.blendShapes[.jawOpen]?.floatValue ?? 0.2
-        child?.scale = SCNVector3(self.animSize + jawOpenValue*6, self.animSize/8 + jawOpenValue*2, 0.1)
+        child?.scale = SCNVector3(self.animSize + jawOpenValue*6*animMag, self.animSize/8 + jawOpenValue*2*animMag, 0.1)
       default:
         break
       }
     }
   }
-    
-  //enable switching 
-  @IBAction func handleTap(_ sender: UITapGestureRecognizer) {
-    let location = sender.location(in: sceneView)
-    let results = sceneView.hitTest(location, options: nil)
-    if let result = results.first,
-      let node = result.node as? FaceNode {
-      node.next()
-    }
-  }
+
     
 }
 ///////////////////AR functions end///////////////////
@@ -374,10 +386,10 @@ extension ViewController: UITextFieldDelegate{
     }
     
 }
-
-extension ViewController: RPPreviewViewControllerDelegate {
-    func previewControllerDidFinish(_ previewController: RPPreviewViewController) {
-        viewController.dismiss(animated: true)
-    }
-}
+//
+//extension ViewController: RPPreviewViewControllerDelegate {
+//    func previewControllerDidFinish(_ previewController: RPPreviewViewController) {
+//        viewController.dismiss(animated: true)
+//    }
+//}
 

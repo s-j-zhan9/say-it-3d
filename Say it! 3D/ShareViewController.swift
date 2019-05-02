@@ -21,6 +21,7 @@ class ShareViewController: UIViewController {
     var videoUrl : URL!
     var playerLooper: AVPlayerLooper!
     var playerLayer: AVPlayerLayer!
+    @IBOutlet weak var closeButton: UIButton!
     @IBOutlet weak var sharePanel: UIView!
     @IBOutlet weak var playView: UIView!
     @IBOutlet weak var infoButton: UIButton!
@@ -186,16 +187,15 @@ class ShareViewController: UIViewController {
     @IBAction func handleInfoButton(_ sender: Any) {
         infoButton.isHidden = true
         infoView.isHidden = false
-        //let infoView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
-//        infoView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
-//        infoView.center = self.view.center
-//        self.view.addSubview(infoView)
+        sharePanel.isHidden = true
+        closeButton.isHidden = true
         
-
     }
     
     @IBAction func handleCloseInfoButton(_ sender: Any) {
         infoButton.isHidden = false
         infoView.isHidden = true
+        closeButton.isHidden = false
+        sharePanel.isHidden = false
     }
 }
