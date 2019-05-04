@@ -28,9 +28,12 @@ class ShareViewController: UIViewController {
     @IBOutlet weak var infoView: UIView!
     @IBOutlet weak var closeInfoButton: UIButton!
     
+    var  player: AVPlayer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        try? AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, policy: .default, options: .defaultToSpeaker)
         
         infoButton.isHidden = false
         infoView.isHidden = true
@@ -58,58 +61,73 @@ class ShareViewController: UIViewController {
         player.play()
     }
     
-    private func loopVideo2() {
-        let player = AVPlayer(url: self.videoUrl!)
-        let playerLayer = AVPlayerLayer(player: player)
-        //set up player layer
-        playerLayer.frame = CGRect(x: 0,y: 0,width: self.view.frame.width * 0.98,height: self.view.frame.height * 0.98)
-        //playerLayer.position = self.view.center
-        playerLayer.position = CGPoint(x: self.view.bounds.midX, y: self.view.bounds.midY)
-        
-        playerLayer.shadowColor = UIColor.black.cgColor
-        playerLayer.shadowOpacity = 1
-        playerLayer.shadowOffset = CGSize.zero
-        playerLayer.shadowRadius = 10
-
-        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime,
-                                               object: nil,
-                                               queue: nil) { [weak self] note in
-                                                player.seek(to: CMTime.zero)
-                                                player.play()
-        }
-        
-//        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: nil) { (_) in
-//            player.seek(to: CMTime.zero)
-//            player.play()
-//            }
-        self.view.layer.addSublayer(playerLayer)
-        }
-    
+//    private func loopVideo2() {
+//        player = AVPlayer(url: self.videoUrl!)
+//        let playerLayer = AVPlayerLayer(player: player)
+//        //set up player layer
+//        playerLayer.frame = CGRect(x: 0,y: 0,width: self.view.frame.width * 0.98,height: self.view.frame.height * 0.98)
+//        //playerLayer.position = self.view.center
+//        playerLayer.position = CGPoint(x: self.view.bounds.midX, y: self.view.bounds.midY)
+//
+//        playerLayer.shadowColor = UIColor.black.cgColor
+//        playerLayer.shadowOpacity = 1
+//        playerLayer.shadowOffset = CGSize.zero
+//        playerLayer.shadowRadius = 10
+//
+//        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime,
+//                                               object: player.currentItem,
+//                                               queue: nil) { [weak self] note in
+//                                                player.seek(to: CMTime.zero)
+//                                                player.play()
+//        }
+//
+//
+//
+////        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: nil) { (_) in
+////            player.seek(to: CMTime.zero)
+////            player.play()
+////            }
+//        self.view.layer.addSublayer(playerLayer)
+//        player.play()
+//        }
+//
     private func loopVideo() {
-        let asset = AVAsset(url: self.videoUrl)
-        let playerItem = AVPlayerItem(asset: asset)
-        let queuePlayer = AVQueuePlayer(playerItem: playerItem)
-        // Begin looping playback
-        queuePlayer.play()
-        playerLayer = AVPlayerLayer(player: queuePlayer)
+//        let asset = AVAsset(url: self.videoUrl)
+//        let playerItem = AVPlayerItem(asset: asset)
+//        let queuePlayer = AVQueuePlayer(playerItem: playerItem)
+//        // Begin looping playback
+//        queuePlayer.play()
+//        playerLayer = AVPlayerLayer(player: queuePlayer)
+//
+//        // Create a new player looper with the queue player and template item
+//        playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem)
 
-        // Create a new player looper with the queue player and template item
-        playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem)
+        
+        self.player = AVPlayer(url: self.videoUrl!)
+        let playerLayer = AVPlayerLayer(player: player)
         
         //set up player layer
         playerLayer.frame = CGRect(x: 0,y: 0,width: self.playView.frame.width, height: self.playView.frame.height)
         //playerLayer.position = self.view.center
         playerLayer.position = CGPoint(x: self.playView.bounds.midX, y: self.playView.bounds.midY)
         
+        //player styling
         playerLayer.shadowColor = UIColor.black.cgColor
         playerLayer.shadowOpacity = 0.1
         playerLayer.shadowOffset = CGSize(width: 0, height: 1)
         playerLayer.shadowRadius = 2
-        self.playView.layer.addSublayer(playerLayer)
 
         print("playerLayer created")
-        
-        
+        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime,
+                                               object: self.player!.currentItem,
+                                               queue: nil) { [weak self] note in
+                                                self?.player!.seek(to: CMTime.zero)
+                                                self?.player!.play()
+        }
+
+        self.playView.layer.addSublayer(playerLayer)
+        player!.volume = 1.0
+        player!.play()
     }
     
     @IBAction func handleCloseButton(_ sender: Any) {
@@ -118,10 +136,7 @@ class ShareViewController: UIViewController {
     
     
     @IBAction func handleIgButton(_ sender: Any) {
-        
-        
         print("ig button clicked")
-
     }
     
     //send to instagram: https://developers.facebook.com/docs/instagram/sharing-to-stories/

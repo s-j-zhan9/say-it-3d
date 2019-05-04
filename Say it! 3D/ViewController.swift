@@ -245,11 +245,11 @@ class ViewController: UIViewController{
         if(fontButton.titleLabel!.text == "REGULAR" && messageField.text != ""){
             messageField.font = UIFont(name: "AvenirNextCondensed-Heavy", size: 42)
             let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = "AvenirNextCondensed-Heavy"
+            faceNode.fontFace = "Avenir-Black"
             faceNode.updateNewOptions(with: mouthOptions)
 
             sender.setTitle("BOLD", for: .normal)
-            fontButton.titleLabel?.font =  UIFont(name: "AvenirNextCondensed-Heavy", size: 13)
+            fontButton.titleLabel?.font =  UIFont(name: "Avenir-Black", size: 13)
         } else if (fontButton.titleLabel!.text == "BOLD" && messageField.text != ""){
             messageField.font = UIFont(name: "AmericanTypewriter", size: 42)
             let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode

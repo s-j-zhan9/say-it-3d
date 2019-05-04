@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		18C7700A21272F1A00134695 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18C7700921272F1A00134695 /* LaunchScreen.storyboard */; };
 		5A1F0E1F22701C2200849E65 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1F0E1E22701C2200849E65 /* ShareViewController.swift */; };
+		5A242162227B537A00F73958 /* Pods_Say_it__3D.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4EECA4EEE7CD06071F6663F /* Pods_Say_it__3D.framework */; };
 		5A37995F226929C50022957D /* IBInspectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A37995E226929C50022957D /* IBInspectable.swift */; };
 		601F519F20E617B80037214B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F519E20E617B80037214B /* AppDelegate.swift */; };
 		601F51A120E617B80037214B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51A020E617B80037214B /* ViewController.swift */; };
@@ -16,7 +17,6 @@
 		601F51A620E617B90037214B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 601F51A520E617B90037214B /* Assets.xcassets */; };
 		601F51BC20E61EBA0037214B /* FaceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51BA20E61EBA0037214B /* FaceNode.swift */; };
 		601F51BD20E61EBA0037214B /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F51BB20E61EBA0037214B /* StringExtension.swift */; };
-		96C80B5B0D6E6D3DF1D86235 /* Pods_Say_it__3D.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4EECA4EEE7CD06071F6663F /* Pods_Say_it__3D.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,7 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96C80B5B0D6E6D3DF1D86235 /* Pods_Say_it__3D.framework in Frameworks */,
+				5A242162227B537A00F73958 /* Pods_Say_it__3D.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,11 +378,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4WWD59847Z;
 				INFOPLIST_FILE = "$(SRCROOT)/Say it! 3D/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sjzhang;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -394,11 +395,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4WWD59847Z;
 				INFOPLIST_FILE = "$(SRCROOT)/Say it! 3D/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sjzhang;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
