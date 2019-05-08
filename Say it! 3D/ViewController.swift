@@ -25,6 +25,8 @@ class ViewController: UIViewController{
     
     let textAllowed = 20
     var textTimer = Timer()
+    var currentFontFace = "Avenir-Black"
+    var currentFontColor: UIColor = .white
     
     //Record Button
     @IBOutlet var recordButton: RecordButton!
@@ -48,7 +50,8 @@ class ViewController: UIViewController{
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    
+    messageField.text = "Say it"
+
     UITextField.appearance().keyboardAppearance = .dark
     
     textSizeButton.adjustsImageWhenHighlighted = false
@@ -220,11 +223,11 @@ class ViewController: UIViewController{
     
     func submitText(){
         textTimer.invalidate()
-
         // Update new Node Options
         if messageField.text != "" {
             mouthOptions = [messageField.text as! String]
             let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            //faceNode.fontFace = currentFontFace
             faceNode.updateNewOptions(with: mouthOptions)}
         
         messageField.resignFirstResponder()
@@ -244,48 +247,54 @@ class ViewController: UIViewController{
     @IBAction func handleFontButton(_ sender: UIButton) {
         
         if(fontButton.titleLabel!.text == "REGULAR"){
-            messageField.font = UIFont(name: "AvenirNext-HeavyItalic", size: 42)
+            currentFontFace = "AvenirNext-HeavyItalic"
+            messageField.font = UIFont(name: currentFontFace, size: 42)
             sender.setTitle("BOLD", for: .normal)
-            fontButton.titleLabel?.font =  UIFont(name: "AvenirNext-HeavyItalic", size: 13)
-            if (messageField.text != ""){
+            fontButton.titleLabel?.font =  UIFont(name: currentFontFace, size: 13)
+//            if (messageField.text != ""){
             let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = "AvenirNext-HeavyItalic"
-            faceNode.updateNewOptions(with: mouthOptions)
-            }
+            faceNode.fontFace = currentFontFace
+//            faceNode.updateNewOptions(with: mouthOptions)
+//            }
 
         } else if (fontButton.titleLabel!.text == "BOLD"){
-            messageField.font = UIFont(name: "Baskerville-SemiBold", size: 42)
+            currentFontFace = "Baskerville-SemiBold"
+            messageField.font = UIFont(name: currentFontFace, size: 42)
             sender.setTitle("ELEGANT", for: .normal)
-            fontButton.titleLabel?.font =  UIFont(name: "Baskerville-SemiBold", size: 13)
+            fontButton.titleLabel?.font =  UIFont(name: currentFontFace, size: 13)
             
-            if (messageField.text != ""){
-            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = "Baskerville-SemiBold"
-            faceNode.updateNewOptions(with: mouthOptions)
-            }
+
+            
+//            if (messageField.text != ""){
+                let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+                faceNode.fontFace = currentFontFace
+//            faceNode.updateNewOptions(with: mouthOptions)
+//            }
             
 
         }else if (fontButton.titleLabel!.text == "ELEGANT"){
-            messageField.font = UIFont(name: "Courier", size: 42)
+            currentFontFace = "Courier"
+            messageField.font = UIFont(name: currentFontFace, size: 42)
             sender.setTitle("TYPEWRITTER", for: .normal)
-            fontButton.titleLabel?.font =  UIFont(name: "Courier", size: 13)
+            fontButton.titleLabel?.font =  UIFont(name: currentFontFace, size: 13)
             
-            if (messageField.text != ""){
+//            if (messageField.text != ""){
 
             let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = "Courier"
-            faceNode.updateNewOptions(with: mouthOptions)
-            }
+            faceNode.fontFace = currentFontFace
+//            faceNode.updateNewOptions(with: mouthOptions)
+//            }
             
         }else if (fontButton.titleLabel!.text == "TYPEWRITTER"){
-            messageField.font = UIFont(name: "Avenir-Black", size: 42)
+            currentFontFace = "Avenir-Black"
+            messageField.font = UIFont(name: currentFontFace, size: 42)
             sender.setTitle("REGULAR", for: .normal)
-            fontButton.titleLabel?.font =  UIFont(name: "Avenir-Black", size: 13)
-            if (messageField.text != ""){
+            fontButton.titleLabel?.font =  UIFont(name: currentFontFace, size: 13)
+//            if (messageField.text != ""){
             let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = "Avenir-Black"
-            faceNode.updateNewOptions(with: mouthOptions)
-            }
+            faceNode.fontFace = currentFontFace
+//            faceNode.updateNewOptions(with: mouthOptions)
+//            }
         }
         
     }
