@@ -33,9 +33,13 @@ class ViewController: UIViewController{
     let yellow = UIColor(red: 236/255, green: 166/255, blue: 18/255, alpha: 1.0)
     let pink = UIColor(red: 255/255, green: 173/255, blue: 150/255, alpha: 1.0)
 
-//    var fontColors = [UIColor?]()
     var currentFontColor: UIColor!
 
+    
+    //color buttons
+    @IBOutlet weak var redColorButton: UIButton!
+    @IBOutlet weak var yellowColorButton: UIButton!
+    
     
     //Record Button
     @IBOutlet var recordButton: RecordButton!
@@ -51,10 +55,10 @@ class ViewController: UIViewController{
     var videoUrl: URL?
     
     //base size of animation
-    var animSize: Float = 1.4
+    var animSize: Float = 1.6
     
     //magnitude of animation
-    var animMag: Float = 1.6
+    var animMag: Float = 1.8
     
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -280,6 +284,7 @@ class ViewController: UIViewController{
     
     @IBAction func handleRedButton(_ sender: Any) {
         setColor(newColor: red)
+        
 
     }
     
@@ -341,6 +346,16 @@ class ViewController: UIViewController{
         messageField.textColor = currentFontColor
         let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
         faceNode.fontColor = currentFontColor
+        
+        redColorButton.isSelected = false
+        yellowColorButton.isSelected = false
+        
+        if (currentFontColor == red){
+            redColorButton.isSelected = true
+        }
+        if (currentFontColor == yellow){
+            yellowColorButton.isSelected = true
+        }
     }
     
     @IBAction func HandleTextSizeButton(_ sender: UIButton) {
@@ -356,14 +371,14 @@ class ViewController: UIViewController{
     func setSize(newFontSize: String!){
         currentFontSize = newFontSize
         if (newFontSize == "M"){
-            self.animSize = 1.4
-            self.animMag = 1.6
+            self.animSize = 1.6
+            self.animMag = 1.8
         } else if (newFontSize == "L"){
-            self.animSize = 3.5
-            self.animMag = 1.7
+            self.animSize = 4
+            self.animMag = 1.9
         }else if (newFontSize == "S"){
             self.animSize = 0.7
-            self.animMag = 0.8
+            self.animMag = 0.7
         }
         textSizeButton.setTitle(currentFontSize, for: .normal)
     }
@@ -382,7 +397,7 @@ class ViewController: UIViewController{
       switch feature {
       case "mouth":
         let jawOpenValue = anchor.blendShapes[.jawOpen]?.floatValue ?? 0.2
-        child?.scale = SCNVector3(self.animSize + jawOpenValue*12*animMag, self.animSize/8 + jawOpenValue*2*animMag, 0.1)
+        child?.scale = SCNVector3(self.animSize + jawOpenValue*9*animMag, self.animSize/8 + jawOpenValue*animMag, 0.1)
       default:
         break
       }
@@ -456,10 +471,4 @@ extension ViewController: UITextFieldDelegate{
     }
     
 }
-//
-//extension ViewController: RPPreviewViewControllerDelegate {
-//    func previewControllerDidFinish(_ previewController: RPPreviewViewController) {
-//        viewController.dismiss(animated: true)
-//    }
-//}
 

@@ -208,8 +208,13 @@
                                                         <rect key="frame" x="110" y="20" width="30" height="39"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="⬤">
                                                             <color key="titleColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                            <color key="titleShadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </state>
+                                                        <state key="selected" title="⬤">
+                                                            <color key="titleColor" red="1" green="0.14913141730000001" blue="0.0" alpha="0.724609375" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <color key="titleShadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </state>
                                                         <connections>
@@ -220,8 +225,13 @@
                                                         <rect key="frame" x="158" y="20" width="30" height="39"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="⬤">
                                                             <color key="titleColor" red="0.98771454020000005" green="0.77826743529999998" blue="0.041083171139999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                            <color key="titleShadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </state>
+                                                        <state key="selected" title="⬤">
+                                                            <color key="titleColor" red="0.99942404029999998" green="0.98555368190000003" blue="0.0" alpha="0.64092759683098588" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <color key="titleShadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </state>
                                                         <connections>
@@ -303,9 +313,11 @@
                         <outlet property="messageField" destination="qcC-R3-UKZ" id="7ax-kE-2in"/>
                         <outlet property="recordButton" destination="Qd2-P7-Kym" id="2JB-HX-zqS"/>
                         <outlet property="recordView" destination="Fam-Qr-BhN" id="NIS-Fn-s7J"/>
+                        <outlet property="redColorButton" destination="kPl-9P-raZ" id="fQh-UW-DBZ"/>
                         <outlet property="sceneView" destination="8bC-Xf-vdC" id="Jck-as-3ag"/>
                         <outlet property="textInputView" destination="OS1-qg-JjP" id="qfR-dv-EYJ"/>
                         <outlet property="textSizeButton" destination="xOD-hb-7al" id="rWG-Ea-buz"/>
+                        <outlet property="yellowColorButton" destination="qEZ-Zr-osL" id="AZH-Zl-T88"/>
                         <segue destination="g2D-XN-R5N" kind="presentation" identifier="toShare" id="BfT-8k-Pub"/>
                     </connections>
                 </viewController>
