@@ -38,7 +38,7 @@ extension String {
     
     func image(fontFace: String, fontSize: CGFloat, fontColor: UIColor, bgSize: CGSize) -> UIImage? {
     
-    let size = CGSize(width: 480, height: 100)
+    let size = CGSize(width: 860, height: 80)
     
     UIGraphicsBeginImageContextWithOptions(size, false, 0)
     UIColor.clear.set()

@@ -21,22 +21,32 @@ class ShareViewController: UIViewController {
     var videoUrl : URL!
     var playerLooper: AVPlayerLooper!
     var playerLayer: AVPlayerLayer!
+    var savedChecker: Bool = false
+
     @IBOutlet weak var closeButton: UIButton!
     @IBOutlet weak var sharePanel: UIView!
     @IBOutlet weak var playView: UIView!
     @IBOutlet weak var infoButton: UIButton!
     @IBOutlet weak var infoView: UIView!
     @IBOutlet weak var closeInfoButton: UIButton!
+    @IBOutlet weak var downloadBGView: UIView!
+    @IBOutlet weak var downloadButton: UIButton!
+    
+    //download button
+    @IBOutlet weak var downloadArrow: UIImageView!
+    @IBOutlet weak var savedLabel: UILabel!
+    
+    
     
     var  player: AVPlayer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         try? AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, policy: .default, options: .defaultToSpeaker)
         
-        infoButton.isHidden = false
+        //infoButton.isHidden = false
         infoView.isHidden = true
+        downloadBGView.isHidden = true
         
         sharePanel.layer.shadowColor = UIColor.black.cgColor
         sharePanel.layer.shadowOpacity = 0.2
@@ -61,46 +71,8 @@ class ShareViewController: UIViewController {
         player.play()
     }
     
-//    private func loopVideo2() {
-//        player = AVPlayer(url: self.videoUrl!)
-//        let playerLayer = AVPlayerLayer(player: player)
-//        //set up player layer
-//        playerLayer.frame = CGRect(x: 0,y: 0,width: self.view.frame.width * 0.98,height: self.view.frame.height * 0.98)
-//        //playerLayer.position = self.view.center
-//        playerLayer.position = CGPoint(x: self.view.bounds.midX, y: self.view.bounds.midY)
-//
-//        playerLayer.shadowColor = UIColor.black.cgColor
-//        playerLayer.shadowOpacity = 1
-//        playerLayer.shadowOffset = CGSize.zero
-//        playerLayer.shadowRadius = 10
-//
-//        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime,
-//                                               object: player.currentItem,
-//                                               queue: nil) { [weak self] note in
-//                                                player.seek(to: CMTime.zero)
-//                                                player.play()
-//        }
-//
-//
-//
-////        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: nil) { (_) in
-////            player.seek(to: CMTime.zero)
-////            player.play()
-////            }
-//        self.view.layer.addSublayer(playerLayer)
-//        player.play()
-//        }
-//
+
     private func loopVideo() {
-//        let asset = AVAsset(url: self.videoUrl)
-//        let playerItem = AVPlayerItem(asset: asset)
-//        let queuePlayer = AVQueuePlayer(playerItem: playerItem)
-//        // Begin looping playback
-//        queuePlayer.play()
-//        playerLayer = AVPlayerLayer(player: queuePlayer)
-//
-//        // Create a new player looper with the queue player and template item
-//        playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem)
 
         
         self.player = AVPlayer(url: self.videoUrl!)
@@ -137,50 +109,47 @@ class ShareViewController: UIViewController {
     
     @IBAction func handleIgButton(_ sender: Any) {
         print("ig button clicked")
+        
+        let url = URL(string: "instagram-stories://share")!
+        if UIApplication.shared.canOpenURL(url){
+            
+            let backgroundData = NSData(contentsOf: videoUrl)
+            let pasteBoardItems = [
+                ["com.instagram.sharedSticker.backgroundVideo" : backgroundData]
+            ]
+            
+            if #available(iOS 10.0, *) {
+                
+                UIPasteboard.general.setItems(pasteBoardItems, options: [.expirationDate: Date().addingTimeInterval(60 * 5)])
+            } else {
+                UIPasteboard.general.items = pasteBoardItems
+            }
+            UIApplication.shared.openURL(url)
+    }
     }
     
-    //send to instagram: https://developers.facebook.com/docs/instagram/sharing-to-stories/
-//    - (void)shareBackgroundImage {
-//    [self backgroundImage:UIImagePNGRepresentation([UIImage imageNamed:@"backgroundImage"])
-//    attributionURL:@"http://your-deep-link-url"];
-//    }
-//
-//    - (void)backgroundImage:(NSData *)backgroundImage
-//    attributionURL:(NSString *)attributionURL {
-//
-//    // Verify app can open custom URL scheme, open if able
-//    NSURL *urlScheme = [NSURL URLWithString:@"instagram-stories://share"];
-//    if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
-//
-//    // Assign background image asset and attribution link URL to pasteboard
-//    NSArray *pasteboardItems = @[@{@"com.instagram.sharedSticker.backgroundImage" : backgroundImage,
-//    @"com.instagram.sharedSticker.contentURL" : attributionURL}];
-//    NSDictionary *pasteboardOptions = @{UIPasteboardOptionExpirationDate : [[NSDate date] dateByAddingTimeInterval:60 * 5]};
-//    // This call is iOS 10+, can use 'setItems' depending on what versions you support
-//    [[UIPasteboard generalPasteboard] setItems:pasteboardItems options:pasteboardOptions];
-//
-//    [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
-//    } else {
-//    // Handle older app versions or app not installed case
-//    }
-//    }
     
     @IBAction func handleSaveButton(_ sender: Any) {
-        
         print("save button clicked")
-        self.checkAuthorizationAndPresentActivityController(toShare: videoUrl, using: self)
+        self.checkAuthorizationAndSaveToCameraRoll(toShare: videoUrl, using: self)
+        downloadFeedback()
+        
     }
-    @IBAction func handleShareButton(_ sender: Any) {
-        print("share button clicked")
-        self.checkAuthorizationAndPresentActivityController(toShare: videoUrl, using: self)
-    }
-    //Sharesheet & acess to photo lib
-    private func checkAuthorizationAndPresentActivityController(toShare data: Any, using presenter: UIViewController) {
+    
+    //save directly to camera roll
+    private func checkAuthorizationAndSaveToCameraRoll(toShare data: URL, using presenter: UIViewController) {
         switch PHPhotoLibrary.authorizationStatus() {
         case .authorized:
-            let activityViewController = UIActivityViewController(activityItems: [data], applicationActivities: nil)
-            activityViewController.excludedActivityTypes = [UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.openInIBooks, UIActivity.ActivityType.print]
-            presenter.present(activityViewController, animated: true, completion: nil)
+            self.savedChecker = true
+            PHPhotoLibrary.shared().performChanges({
+                PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: data)
+            }) { saved, error in
+                if saved {
+                    
+                }
+            }
+            
+            
         case .restricted, .denied:
             let libraryRestrictedAlert = UIAlertController(title: "Photos access denied",
                                                            message: "Please enable Photos access for this application in Settings > Privacy to allow saving screenshots.",
@@ -198,6 +167,99 @@ class ShareViewController: UIViewController {
         }
     }
     
+    
+    
+    func downloadFeedback(){
+        
+        if(self.savedChecker == true){
+            
+
+            self.downloadBGView.alpha = 0.0
+
+            self.downloadBGView.isHidden = false
+            self.savedLabel.alpha = 0
+
+ 
+            UIView.animate(
+                withDuration: 0.3,
+                delay: 0.6,
+                animations: {
+                    self.downloadBGView.alpha = 1
+            })
+            
+            UIView.animate(
+                withDuration: 0.2,
+                delay: 1.6,
+                options: [.curveLinear, ],
+                animations: {
+                    self.downloadBGView.alpha = 0
+            })
+            
+            UIView.animate(
+                withDuration: 0.2,
+                delay: 0.6,
+                options: [.curveLinear,],
+                animations: {
+                    self.savedLabel.alpha = 1
+            })
+            
+            UIView.animate(
+                withDuration: 0.5,
+                delay: 0.2,
+                options: [.curveLinear, ],
+                animations: {
+                    self.downloadArrow.center = CGPoint(x: self.downloadArrow.center.x, y: self.downloadArrow.center.y+20)
+            })
+            
+            self.downloadArrow.center.y = self.downloadArrow.center.y
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+                self.downloadArrow.center.y = self.downloadArrow.center.y-20
+                self.downloadBGView.isHidden = true
+            }
+            
+        }
+        //        let alertController = UIAlertController(title: "Saved to Photo", message: nil, preferredStyle: .alert)
+        //        let defaultAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        //        alertController.addAction(defaultAction)
+        //        self.present(alertController, animated: true, completion: nil)
+    }
+
+    
+    @IBAction func handleShareButton(_ sender: Any) {
+        print("share button clicked")
+        self.checkAuthorizationAndPresentActivityController(toShare: videoUrl, using: self)
+    }
+    
+    //Sharesheet & access to photo lib
+    private func checkAuthorizationAndPresentActivityController(toShare data: Any, using presenter: UIViewController) {
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .authorized:
+            let activityViewController = UIActivityViewController(activityItems: [data], applicationActivities: nil)
+            activityViewController.excludedActivityTypes = [UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.openInIBooks, UIActivity.ActivityType.print]
+            presenter.present(activityViewController, animated: true, completion: nil)
+            
+        case .restricted, .denied:
+            let libraryRestrictedAlert = UIAlertController(title: "Photos access denied",
+                                                           message: "Please enable Photos access for this application in Settings > Privacy to allow saving screenshots.",
+                                                           preferredStyle: UIAlertController.Style.alert)
+            libraryRestrictedAlert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+            presenter.present(libraryRestrictedAlert, animated: true, completion: nil)
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization({ (authorizationStatus) in
+                if authorizationStatus == .authorized {
+                    let activityViewController = UIActivityViewController(activityItems: [data], applicationActivities: nil)
+                    activityViewController.excludedActivityTypes = [UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.openInIBooks, UIActivity.ActivityType.print]
+                    presenter.present(activityViewController, animated: true, completion: nil)
+                }
+            })
+        }
+    }
+
+    
+
+    
+
 
     @IBAction func handleInfoButton(_ sender: Any) {
         infoButton.isHidden = true

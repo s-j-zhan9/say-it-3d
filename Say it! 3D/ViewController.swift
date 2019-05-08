@@ -18,8 +18,13 @@ class ViewController: UIViewController{
     let features = ["nose", "leftEye", "rightEye", "mouth", "hat"]
     let featureIndices = [[9], [1064], [42], [24, 25], [20]]
     
+    var presetNum = 1
     
     @IBOutlet weak var fontButton: UIButton!
+    @IBOutlet weak var countDownLabel: UILabel!
+    
+    let textAllowed = 20
+    var textTimer = Timer()
     
     //Record Button
     @IBOutlet var recordButton: RecordButton!
@@ -29,10 +34,8 @@ class ViewController: UIViewController{
     
     var recorder: SceneKitVideoRecorder?
     
-    //text size
     @IBOutlet weak var textSizeButton: UIButton!
-    //var textSizeState = 2
-    
+
     //video url to pass
     var videoUrl: URL?
     
@@ -45,10 +48,14 @@ class ViewController: UIViewController{
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    
     UITextField.appearance().keyboardAppearance = .dark
     
     textSizeButton.adjustsImageWhenHighlighted = false
     fontButton.adjustsImageWhenHighlighted = false
+    
+
+
 
     // set up recorder button
     recordButton.center = recordView.center
@@ -114,17 +121,9 @@ class ViewController: UIViewController{
         
         //delay 0.3s
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.0, execute: {
             self.recorder?.startWriting().onSuccess {
                 print("Recording Started")
             }
-        })
-        
-        //Scene kit video recorder (working)
-        
-//        self.recorder?.startWriting().onSuccess {
-//            print("Recording Started")
-//        }
     }
 
     @objc func updateProgress() {
@@ -137,7 +136,7 @@ class ViewController: UIViewController{
         if progress >= 1 {
             progressTimer.invalidate()
         }
-
+        stop()
     }
 
     @objc func stop() {
@@ -152,7 +151,6 @@ class ViewController: UIViewController{
             self?.videoUrl = url
             self?.performSegue(withIdentifier: "toShare", sender: self)
 
-            //self?.checkAuthorizationAndPresentActivityController(toShare: url, using: self!)
         }
     
     }
@@ -192,11 +190,18 @@ class ViewController: UIViewController{
     ////////////message input functions start/////////////
     
     func startTextInput(){
+        
+        textTimer.invalidate() // just in case this button is tapped multiple times
+        
+        // start the timer
+        textTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(userIsTyping), userInfo: nil, repeats: true)
+        
         textInputView.isHidden = false
         messageField.becomeFirstResponder()
         //hide auto suggestion
-        messageField.autocorrectionType = .no
-    }
+        //messageField.autocorrectionType = .no
+        
+        }
     
     //button to trigger text input view
     @IBAction func textInputButton(_ sender: Any) {
@@ -205,20 +210,17 @@ class ViewController: UIViewController{
     
     //tap to trigger text input view
     @IBAction func handleTap(_ sender: UITapGestureRecognizer) {
-        //    let location = sender.location(in: sceneView)
-        //    let results = sceneView.hitTest(location, options: nil)
-        //    if let result = results.first,
-        //      let node = result.node as? FaceNode {
-        //      node.next()
-        //    }
         guard sender.view != nil else { return }
         startTextInput()
     }
     
+    @objc func userIsTyping(_ sender: Any) {
+        countDownLabel.text = "\(textAllowed - messageField.text!.count)"
+    }
+    
     func submitText(){
-        //add text field input to array
-        //mouthOptions.insert(messageField.text as! String, at: 0)
-        
+        textTimer.invalidate()
+
         // Update new Node Options
         if messageField.text != "" {
             mouthOptions = [messageField.text as! String]
@@ -229,7 +231,7 @@ class ViewController: UIViewController{
         textInputView.isHidden = true
     }
     
-    //OK button to submit string into mouthOptions
+    //OK button to submit string
     @IBAction func handleSubmitButton(_ sender: Any) {
         submitText()
     }
@@ -240,32 +242,50 @@ class ViewController: UIViewController{
     
     
     @IBAction func handleFontButton(_ sender: UIButton) {
-        //set if string is empty, update settings but let change
         
-        if(fontButton.titleLabel!.text == "REGULAR" && messageField.text != ""){
-            messageField.font = UIFont(name: "AvenirNextCondensed-Heavy", size: 42)
+        if(fontButton.titleLabel!.text == "REGULAR"){
+            messageField.font = UIFont(name: "AvenirNext-HeavyItalic", size: 42)
+            sender.setTitle("BOLD", for: .normal)
+            fontButton.titleLabel?.font =  UIFont(name: "AvenirNext-HeavyItalic", size: 13)
+            if (messageField.text != ""){
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "AvenirNext-HeavyItalic"
+            faceNode.updateNewOptions(with: mouthOptions)
+            }
+
+        } else if (fontButton.titleLabel!.text == "BOLD"){
+            messageField.font = UIFont(name: "Baskerville-SemiBold", size: 42)
+            sender.setTitle("ELEGANT", for: .normal)
+            fontButton.titleLabel?.font =  UIFont(name: "Baskerville-SemiBold", size: 13)
+            
+            if (messageField.text != ""){
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "Baskerville-SemiBold"
+            faceNode.updateNewOptions(with: mouthOptions)
+            }
+            
+
+        }else if (fontButton.titleLabel!.text == "ELEGANT"){
+            messageField.font = UIFont(name: "Courier", size: 42)
+            sender.setTitle("TYPEWRITTER", for: .normal)
+            fontButton.titleLabel?.font =  UIFont(name: "Courier", size: 13)
+            
+            if (messageField.text != ""){
+
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "Courier"
+            faceNode.updateNewOptions(with: mouthOptions)
+            }
+            
+        }else if (fontButton.titleLabel!.text == "TYPEWRITTER"){
+            messageField.font = UIFont(name: "Avenir-Black", size: 42)
+            sender.setTitle("REGULAR", for: .normal)
+            fontButton.titleLabel?.font =  UIFont(name: "Avenir-Black", size: 13)
+            if (messageField.text != ""){
             let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
             faceNode.fontFace = "Avenir-Black"
             faceNode.updateNewOptions(with: mouthOptions)
-
-            sender.setTitle("BOLD", for: .normal)
-            fontButton.titleLabel?.font =  UIFont(name: "Avenir-Black", size: 13)
-        } else if (fontButton.titleLabel!.text == "BOLD" && messageField.text != ""){
-            messageField.font = UIFont(name: "AmericanTypewriter", size: 42)
-            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = "AmericanTypewriter"
-            faceNode.updateNewOptions(with: mouthOptions)
-            
-            sender.setTitle("MONO", for: .normal)
-            fontButton.titleLabel?.font =  UIFont(name: "AmericanTypewriter", size: 13)
-        }else if (fontButton.titleLabel!.text == "MONO" && messageField.text != ""){
-            messageField.font = UIFont(name: "Avenir-Medium", size: 42)
-            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = "Avenir-Medium"
-            faceNode.updateNewOptions(with: mouthOptions)
-            
-            sender.setTitle("REGULAR", for: .normal)
-            fontButton.titleLabel?.font =  UIFont(name: "Avenir-Medium", size: 13)
+            }
         }
         
     }
@@ -296,11 +316,66 @@ class ViewController: UIViewController{
     }
     
     
+    @IBAction func handleSwipeLeft(_ sender: Any) {
+        if (presetNum == 4) {
+            presetNum = 1
+        } else {
+        presetNum += 1
+        }
+        updatePresets()
+    }
     
+    @IBAction func handleSwipeRight(_ sender: Any) {
+        if (presetNum == 1) {
+            presetNum = 4
+        } else {
+        presetNum -= 1
+        }
+        updatePresets()
+    }
     
+    //presets
+    func updatePresets(){
+        if (presetNum == 1){
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "Avenir-Black"
+            faceNode.fontColor = .white
+            faceNode.updateNewOptions(with: mouthOptions)
+            self.animSize = 1.4
+            self.animMag = 1.6
+            textSizeButton.setTitle("M", for: .normal)
+            
+        } else if (presetNum == 2){
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "AvenirNext-HeavyItalic"
+            faceNode.fontColor = UIColor(red: 255/255, green: 20/255, blue: 0/255, alpha: 1.0)
+            faceNode.updateNewOptions(with: mouthOptions)
+            self.animSize = 3.5
+            self.animMag = 1.7
+            textSizeButton.setTitle("L", for: .normal)
+            
+        } else if (presetNum == 3){
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "Baskerville-SemiBold"
+            faceNode.fontColor = UIColor(red: 236/255, green: 166/255, blue: 18/255, alpha: 1.0)
+            faceNode.updateNewOptions(with: mouthOptions)
+            self.animSize = 1.4
+            self.animMag = 1.6
+            textSizeButton.setTitle("M", for: .normal)
+            
+        } else if (presetNum == 4){
+            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+            faceNode.fontFace = "Courier"
+            faceNode.fontColor = UIColor(red: 255/255, green: 173/255, blue: 150/255, alpha: 1.0)
+            faceNode.updateNewOptions(with: mouthOptions)
+            self.animSize = 0.7
+            self.animMag = 0.8
+            textSizeButton.setTitle("S", for: .normal)
+            
+        }
+    }
     
     @IBAction func HandleTextSizeButton(_ sender: UIButton) {
-        
         
         if(textSizeButton.titleLabel!.text == "M"){
             
@@ -311,7 +386,7 @@ class ViewController: UIViewController{
         } else if (textSizeButton.titleLabel!.text == "L"){
 
             self.animSize = 0.7
-            self.animMag = 1
+            self.animMag = 0.8
 
             sender.setTitle("S", for: .normal)
         }else if (textSizeButton.titleLabel!.text == "S"){
@@ -321,8 +396,9 @@ class ViewController: UIViewController{
 
             sender.setTitle("M", for: .normal)
         }
-        
     }
+    
+
     
     
     //////////////////////////////////////////////////////
@@ -338,7 +414,7 @@ class ViewController: UIViewController{
       switch feature {
       case "mouth":
         let jawOpenValue = anchor.blendShapes[.jawOpen]?.floatValue ?? 0.2
-        child?.scale = SCNVector3(self.animSize + jawOpenValue*6*animMag, self.animSize/8 + jawOpenValue*2*animMag, 0.1)
+        child?.scale = SCNVector3(self.animSize + jawOpenValue*12*animMag, self.animSize/8 + jawOpenValue*2*animMag, 0.1)
       default:
         break
       }
