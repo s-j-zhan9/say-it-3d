@@ -32,13 +32,25 @@ class ViewController: UIViewController{
     let red = UIColor(red: 255/255, green: 20/255, blue: 0/255, alpha: 1.0)
     let yellow = UIColor(red: 236/255, green: 166/255, blue: 18/255, alpha: 1.0)
     let pink = UIColor(red: 255/255, green: 173/255, blue: 150/255, alpha: 1.0)
+    let green = UIColor(red: 72/255, green: 243/255, blue: 166/255, alpha: 1.0)
+    let aqua = UIColor(red: 101/255, green: 254/255, blue: 255/255, alpha: 1.0)
+    let blue = UIColor(red: 50/255, green: 143/255, blue: 255/255, alpha: 1.0)
+    let purple = UIColor(red: 226/255, green: 85/255, blue: 255/255, alpha: 1.0)
+    let black = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 1.0)
 
     var currentFontColor: UIColor!
 
     
     //color buttons
+    @IBOutlet weak var whiteColorButton: UIButton!
     @IBOutlet weak var redColorButton: UIButton!
     @IBOutlet weak var yellowColorButton: UIButton!
+    @IBOutlet weak var pinkColorButton: UIButton!
+    @IBOutlet weak var greenColorButton: UIButton!
+    @IBOutlet weak var aquaColorButton: UIButton!
+    @IBOutlet weak var blueColorButton: UIButton!
+    @IBOutlet weak var purpleColorButton: UIButton!
+    @IBOutlet weak var blackColorButton: UIButton!
     
     
     //Record Button
@@ -250,7 +262,7 @@ class ViewController: UIViewController{
     
     func setFont(newFont: String!,newTitle: String!){
         currentFontFace = newFont
-        messageField.font = UIFont(name: currentFontFace, size: 42)
+        messageField.font = UIFont(name: currentFontFace, size: 36)
         fontButton.setTitle(newTitle, for: .normal)
         fontButton.titleLabel?.font =  UIFont(name: currentFontFace, size: 13)
         let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
@@ -276,22 +288,30 @@ class ViewController: UIViewController{
     @IBAction func handleWhiteButton(_ sender: Any) {
         setColor(newColor: white)
     }
-    
-    @IBAction func handleBlackButton(_ sender: Any) {
-        setColor(newColor: yellow)
-
-    }
-    
-    @IBAction func handleRedButton(_ sender: Any) {
+        @IBAction func handleRedButton(_ sender: Any) {
         setColor(newColor: red)
-        
-
     }
-    
-    @IBAction func handleYellowButton(_ sender: Any) {
+        @IBAction func handleYellowButton(_ sender: Any) {
         setColor(newColor: yellow)
     }
-    
+        @IBAction func handlePinkButton(_ sender: Any) {
+        setColor(newColor: pink)
+    }
+    @IBAction func handleGreenButton(_ sender: Any) {
+        setColor(newColor: green)
+    }
+    @IBAction func handleAquaButton(_ sender: Any) {
+        setColor(newColor: aqua)
+    }
+    @IBAction func handleBlueButton(_ sender: Any) {
+        setColor(newColor: blue)
+    }
+    @IBAction func handlePurpleButton(_ sender: Any) {
+        setColor(newColor: purple)
+    }
+    @IBAction func handleBlackButton(_ sender: Any) {
+        setColor(newColor: black)
+    }
     
     @IBAction func handleSwipeLeft(_ sender: Any) {
         if (presetNum == 4) {
@@ -349,12 +369,36 @@ class ViewController: UIViewController{
         
         redColorButton.isSelected = false
         yellowColorButton.isSelected = false
+        pinkColorButton.isSelected = false
+        greenColorButton.isSelected = false
+        aquaColorButton.isSelected = false
+        blueColorButton.isSelected = false
+        purpleColorButton.isSelected = false
+        blackColorButton.isSelected = false
         
         if (currentFontColor == red){
             redColorButton.isSelected = true
         }
         if (currentFontColor == yellow){
             yellowColorButton.isSelected = true
+        }
+        if (currentFontColor == pink){
+            pinkColorButton.isSelected = true
+        }
+        if (currentFontColor == green){
+            greenColorButton.isSelected = true
+        }
+        if (currentFontColor == aqua){
+            aquaColorButton.isSelected = true
+        }
+        if (currentFontColor == blue){
+            blueColorButton.isSelected = true
+        }
+        if (currentFontColor == purple){
+            purpleColorButton.isSelected = true
+        }
+        if (currentFontColor == white){
+            whiteColorButton.isSelected = true
         }
     }
     
