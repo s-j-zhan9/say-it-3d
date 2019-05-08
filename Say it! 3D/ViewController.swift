@@ -26,7 +26,16 @@ class ViewController: UIViewController{
     let textAllowed = 20
     var textTimer = Timer()
     var currentFontFace = "Avenir-Black"
-    var currentFontColor: UIColor = .white
+    var currentFontSize = "M"
+    
+    let white = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
+    let red = UIColor(red: 255/255, green: 20/255, blue: 0/255, alpha: 1.0)
+    let yellow = UIColor(red: 236/255, green: 166/255, blue: 18/255, alpha: 1.0)
+    let pink = UIColor(red: 255/255, green: 173/255, blue: 150/255, alpha: 1.0)
+
+//    var fontColors = [UIColor?]()
+    var currentFontColor: UIColor!
+
     
     //Record Button
     @IBOutlet var recordButton: RecordButton!
@@ -50,15 +59,15 @@ class ViewController: UIViewController{
   override func viewDidLoad() {
     super.viewDidLoad()
     
+//    fontColors = [white, red, yellow, pink]
+    currentFontColor = white
+    
     messageField.text = "Say it"
 
     UITextField.appearance().keyboardAppearance = .dark
     
     textSizeButton.adjustsImageWhenHighlighted = false
     fontButton.adjustsImageWhenHighlighted = false
-    
-
-
 
     // set up recorder button
     recordButton.center = recordView.center
@@ -90,6 +99,7 @@ class ViewController: UIViewController{
         //initiate AR tracking
         let configuration = ARFaceTrackingConfiguration()
         sceneView.session.run(configuration)
+
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -108,11 +118,7 @@ class ViewController: UIViewController{
     }
     
     
-    
-    
-    
-    
-    
+ 
     
     
     //////////////////////////////////////////////////////
@@ -164,10 +170,6 @@ class ViewController: UIViewController{
     }
     
 
-    
-    
-    
-    
     //scene kit video recorder
     
     override func viewDidLayoutSubviews() {
@@ -226,10 +228,9 @@ class ViewController: UIViewController{
         // Update new Node Options
         if messageField.text != "" {
             mouthOptions = [messageField.text as! String]
-            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            //faceNode.fontFace = currentFontFace
-            faceNode.updateNewOptions(with: mouthOptions)}
-        
+            updateNode()
+            
+        }
         messageField.resignFirstResponder()
         textInputView.isHidden = true
     }
@@ -243,85 +244,47 @@ class ViewController: UIViewController{
         submitText()
     }
     
+    func setFont(newFont: String!,newTitle: String!){
+        currentFontFace = newFont
+        messageField.font = UIFont(name: currentFontFace, size: 42)
+        fontButton.setTitle(newTitle, for: .normal)
+        fontButton.titleLabel?.font =  UIFont(name: currentFontFace, size: 13)
+        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+        faceNode.fontFace = currentFontFace
+    }
+    
     
     @IBAction func handleFontButton(_ sender: UIButton) {
-        
-        if(fontButton.titleLabel!.text == "REGULAR"){
-            currentFontFace = "AvenirNext-HeavyItalic"
-            messageField.font = UIFont(name: currentFontFace, size: 42)
-            sender.setTitle("BOLD", for: .normal)
-            fontButton.titleLabel?.font =  UIFont(name: currentFontFace, size: 13)
-//            if (messageField.text != ""){
-            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = currentFontFace
-//            faceNode.updateNewOptions(with: mouthOptions)
-//            }
+        if(currentFontFace == "Avenir-Black"){
+            setFont(newFont: "AvenirNext-HeavyItalic",newTitle: "BOLD")
 
-        } else if (fontButton.titleLabel!.text == "BOLD"){
-            currentFontFace = "Baskerville-SemiBold"
-            messageField.font = UIFont(name: currentFontFace, size: 42)
-            sender.setTitle("ELEGANT", for: .normal)
-            fontButton.titleLabel?.font =  UIFont(name: currentFontFace, size: 13)
-            
+        } else if (currentFontFace == "AvenirNext-HeavyItalic"){
+            setFont(newFont: "Baskerville-SemiBold",newTitle: "ELEGANT")
 
-            
-//            if (messageField.text != ""){
-                let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-                faceNode.fontFace = currentFontFace
-//            faceNode.updateNewOptions(with: mouthOptions)
-//            }
-            
+        }else if (currentFontFace == "Baskerville-SemiBold"){
+            setFont(newFont: "Courier",newTitle: "TYPEWRITTER")
 
-        }else if (fontButton.titleLabel!.text == "ELEGANT"){
-            currentFontFace = "Courier"
-            messageField.font = UIFont(name: currentFontFace, size: 42)
-            sender.setTitle("TYPEWRITTER", for: .normal)
-            fontButton.titleLabel?.font =  UIFont(name: currentFontFace, size: 13)
-            
-//            if (messageField.text != ""){
-
-            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = currentFontFace
-//            faceNode.updateNewOptions(with: mouthOptions)
-//            }
-            
-        }else if (fontButton.titleLabel!.text == "TYPEWRITTER"){
-            currentFontFace = "Avenir-Black"
-            messageField.font = UIFont(name: currentFontFace, size: 42)
-            sender.setTitle("REGULAR", for: .normal)
-            fontButton.titleLabel?.font =  UIFont(name: currentFontFace, size: 13)
-//            if (messageField.text != ""){
-            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = currentFontFace
-//            faceNode.updateNewOptions(with: mouthOptions)
-//            }
+        }else if (currentFontFace == "Courier"){
+            setFont(newFont: "Avenir-Black",newTitle: "REGULAR")
         }
-        
     }
 
     @IBAction func handleWhiteButton(_ sender: Any) {
-        messageField.textColor = .white
-        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-        faceNode.fontColor = .white
+        setColor(newColor: white)
     }
     
     @IBAction func handleBlackButton(_ sender: Any) {
-        messageField.textColor = .black
-        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-        faceNode.fontColor = .black
+        setColor(newColor: yellow)
+
     }
     
     @IBAction func handleRedButton(_ sender: Any) {
-        messageField.textColor = .red
-        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-        faceNode.fontColor = .red
+        setColor(newColor: red)
+
     }
     
-    
     @IBAction func handleYellowButton(_ sender: Any) {
-        messageField.textColor = .yellow
-        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-        faceNode.fontColor = .yellow
+        setColor(newColor: yellow)
     }
     
     
@@ -346,68 +309,64 @@ class ViewController: UIViewController{
     //presets
     func updatePresets(){
         if (presetNum == 1){
-            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = "Avenir-Black"
-            faceNode.fontColor = .white
-            faceNode.updateNewOptions(with: mouthOptions)
-            self.animSize = 1.4
-            self.animMag = 1.6
-            textSizeButton.setTitle("M", for: .normal)
-            
+            setFont(newFont: "Avenir-Black",newTitle: "REGULAR")
+            setColor(newColor: white)
+            setSize(newFontSize: "M")
+            updateNode()
         } else if (presetNum == 2){
-            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = "AvenirNext-HeavyItalic"
-            faceNode.fontColor = UIColor(red: 255/255, green: 20/255, blue: 0/255, alpha: 1.0)
-            faceNode.updateNewOptions(with: mouthOptions)
-            self.animSize = 3.5
-            self.animMag = 1.7
-            textSizeButton.setTitle("L", for: .normal)
-            
+            setColor(newColor: red)
+            setFont(newFont: "AvenirNext-HeavyItalic",newTitle: "BOLD")
+            setSize(newFontSize: "L")
+            updateNode()
         } else if (presetNum == 3){
-            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = "Baskerville-SemiBold"
-            faceNode.fontColor = UIColor(red: 236/255, green: 166/255, blue: 18/255, alpha: 1.0)
-            faceNode.updateNewOptions(with: mouthOptions)
-            self.animSize = 1.4
-            self.animMag = 1.6
-            textSizeButton.setTitle("M", for: .normal)
-            
+            setFont(newFont: "Baskerville-SemiBold",newTitle: "ELEGANT")
+            setColor(newColor: yellow)
+            setSize(newFontSize: "M")
+            updateNode()
         } else if (presetNum == 4){
-            let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
-            faceNode.fontFace = "Courier"
-            faceNode.fontColor = UIColor(red: 255/255, green: 173/255, blue: 150/255, alpha: 1.0)
-            faceNode.updateNewOptions(with: mouthOptions)
-            self.animSize = 0.7
-            self.animMag = 0.8
-            textSizeButton.setTitle("S", for: .normal)
-            
+            setFont(newFont: "Courier",newTitle: "TYPEWRITTER")
+            setColor(newColor: pink)
+            setSize(newFontSize: "S")
+            updateNode()
         }
+    }
+    
+    func updateNode(){
+        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+        faceNode.updateNewOptions(with: mouthOptions)
+    }
+    
+    func setColor(newColor: UIColor!){
+        currentFontColor = newColor
+        messageField.textColor = currentFontColor
+        let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
+        faceNode.fontColor = currentFontColor
     }
     
     @IBAction func HandleTextSizeButton(_ sender: UIButton) {
-        
-        if(textSizeButton.titleLabel!.text == "M"){
-            
-            self.animSize = 3.5
-            self.animMag = 1.7
-
-        sender.setTitle("L", for: .normal)
-        } else if (textSizeButton.titleLabel!.text == "L"){
-
-            self.animSize = 0.7
-            self.animMag = 0.8
-
-            sender.setTitle("S", for: .normal)
-        }else if (textSizeButton.titleLabel!.text == "S"){
-
-            self.animSize = 1.4
-            self.animMag = 1.6
-
-            sender.setTitle("M", for: .normal)
+        if(currentFontSize == "M"){
+            setSize(newFontSize: "L")
+        } else if (currentFontSize == "L"){
+            setSize(newFontSize: "S")
+        }else if (currentFontSize == "S"){
+            setSize(newFontSize: "M")
         }
     }
     
-
+    func setSize(newFontSize: String!){
+        currentFontSize = newFontSize
+        if (newFontSize == "M"){
+            self.animSize = 1.4
+            self.animMag = 1.6
+        } else if (newFontSize == "L"){
+            self.animSize = 3.5
+            self.animMag = 1.7
+        }else if (newFontSize == "S"){
+            self.animSize = 0.7
+            self.animMag = 0.8
+        }
+        textSizeButton.setTitle(currentFontSize, for: .normal)
+    }
     
     
     //////////////////////////////////////////////////////
@@ -458,14 +417,6 @@ fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
         return !(lhs < rhs)
     }
 }
-
-
-
-    
-
-    
-    
-    
 
 
 
