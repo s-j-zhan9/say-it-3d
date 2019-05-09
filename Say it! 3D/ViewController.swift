@@ -40,6 +40,7 @@ class ViewController: UIViewController{
 
     var currentFontColor: UIColor!
 
+    @IBOutlet weak var tutorialView: UIView!
     
     //color buttons
     @IBOutlet weak var whiteColorButton: UIButton!
@@ -52,6 +53,10 @@ class ViewController: UIViewController{
     @IBOutlet weak var purpleColorButton: UIButton!
     @IBOutlet weak var blackColorButton: UIButton!
     
+    @IBOutlet weak var textInputButton: UIButton!
+    
+    
+    @IBOutlet weak var tutorialButton: UIButton!
     
     //Record Button
     @IBOutlet var recordButton: RecordButton!
@@ -75,7 +80,6 @@ class ViewController: UIViewController{
   override func viewDidLoad() {
     super.viewDidLoad()
     
-//    fontColors = [white, red, yellow, pink]
     currentFontColor = white
     
     messageField.text = "Say it"
@@ -94,15 +98,35 @@ class ViewController: UIViewController{
     recordButton.center.x = recordView.center.x
     recordButton.center.y = recordView.center.y
     
+    //record button styling
+    recordButton.layer.shadowColor = UIColor.black.cgColor
+    recordButton.layer.shadowRadius = 3.0
+    recordButton.layer.shadowOpacity = 0.3
+    recordButton.layer.shadowOffset = CGSize(width: 0, height: 1)
+    recordButton.layer.masksToBounds = false
+    
+    //textInputButton styling
+    textInputButton.layer.shadowColor = UIColor.black.cgColor
+    textInputButton.layer.shadowRadius = 3.0
+    textInputButton.layer.shadowOpacity = 0.3
+    textInputButton.layer.shadowOffset = CGSize(width: 0, height: 1)
+    textInputButton.layer.masksToBounds = false
+    
+    //textSizeButton styling
+    textSizeButton.layer.shadowColor = UIColor.black.cgColor
+    textSizeButton.layer.shadowRadius = 3.0
+    textSizeButton.layer.shadowOpacity = 0.3
+    textSizeButton.layer.shadowOffset = CGSize(width: 0, height: 1)
+    textSizeButton.layer.masksToBounds = false
+    
     //set up Scene Kit View Recorder to record ARSceneView
     recorder = try! SceneKitVideoRecorder(withARSCNView: sceneView)
     
-    //messageField.text = "Say it"
-
 
     //hide textInputView on launch
     textInputView.isHidden = true
     
+    tutorialView.isHidden = true
 
     
     guard ARFaceTrackingConfiguration.isSupported else { fatalError() }
@@ -160,8 +184,9 @@ class ViewController: UIViewController{
 
         if progress >= 1 {
             progressTimer.invalidate()
+            stop()
         }
-        stop()
+        
     }
 
     @objc func stop() {
@@ -218,6 +243,7 @@ class ViewController: UIViewController{
         textTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(userIsTyping), userInfo: nil, repeats: true)
         
         textInputView.isHidden = false
+        tutorialButton.isHidden = true
         messageField.becomeFirstResponder()
         //hide auto suggestion
         //messageField.autocorrectionType = .no
@@ -245,10 +271,10 @@ class ViewController: UIViewController{
         if messageField.text != "" {
             mouthOptions = [messageField.text as! String]
             updateNode()
-            
         }
         messageField.resignFirstResponder()
         textInputView.isHidden = true
+        tutorialButton.isHidden = false
     }
     
     //OK button to submit string
@@ -264,7 +290,7 @@ class ViewController: UIViewController{
         currentFontFace = newFont
         messageField.font = UIFont(name: currentFontFace, size: 36)
         fontButton.setTitle(newTitle, for: .normal)
-        fontButton.titleLabel?.font =  UIFont(name: currentFontFace, size: 13)
+        //fontButton.titleLabel?.font =  UIFont(name: currentFontFace, size: 13)
         let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
         faceNode.fontFace = currentFontFace
     }
@@ -428,6 +454,17 @@ class ViewController: UIViewController{
     }
     
     
+    //tutorial
+    
+    @IBAction func handleTutorialButton(_ sender: Any) {
+        tutorialView.isHidden = false
+    }
+    
+    @IBAction func tapToDismissTutorialView(_ sender: Any) {
+        tutorialView.isHidden = true
+
+    }
+    
     //////////////////////////////////////////////////////
     //////////////////AR functions start//////////////////
 
@@ -441,7 +478,7 @@ class ViewController: UIViewController{
       switch feature {
       case "mouth":
         let jawOpenValue = anchor.blendShapes[.jawOpen]?.floatValue ?? 0.2
-        child?.scale = SCNVector3(self.animSize + jawOpenValue*9*animMag, self.animSize/8 + jawOpenValue*animMag, 0.1)
+        child?.scale = SCNVector3(self.animSize + jawOpenValue*10*animMag, self.animSize/8 + jawOpenValue*animMag, 0.1)
       default:
         break
       }

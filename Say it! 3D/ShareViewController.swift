@@ -48,10 +48,10 @@ class ShareViewController: UIViewController {
         infoView.isHidden = true
         downloadBGView.isHidden = true
         
-        sharePanel.layer.shadowColor = UIColor.black.cgColor
-        sharePanel.layer.shadowOpacity = 0.2
-        sharePanel.layer.shadowOffset = CGSize(width: 0, height: 0)
-        sharePanel.layer.shadowRadius = 2
+//        sharePanel.layer.shadowColor = UIColor.black.cgColor
+//        sharePanel.layer.shadowOpacity = 0.2
+//        sharePanel.layer.shadowOffset = CGSize(width: 0, height: 0)
+//        sharePanel.layer.shadowRadius = 2
         
         if videoUrl != nil {
             print("printing url from shareview:\(String(describing: videoUrl))")}
@@ -62,14 +62,6 @@ class ShareViewController: UIViewController {
         super.viewDidAppear(animated)
     }
     
-    private func playVideo() {
-        let player = AVPlayer(url: self.videoUrl!)
-        let playerLayer = AVPlayerLayer(player: player)
-        playerLayer.frame = CGRect(x: 0,y: 0,width: self.view.frame.width * 0.65,height: self.view.frame.height * 0.65)
-        playerLayer.position = self.view.center
-        self.view.layer.addSublayer(playerLayer)
-        player.play()
-    }
     
 
     private func loopVideo() {
@@ -85,9 +77,9 @@ class ShareViewController: UIViewController {
         
         //player styling
         playerLayer.shadowColor = UIColor.black.cgColor
-        playerLayer.shadowOpacity = 0.1
+        playerLayer.shadowOpacity = 0.3
         playerLayer.shadowOffset = CGSize(width: 0, height: 1)
-        playerLayer.shadowRadius = 2
+        playerLayer.shadowRadius = -4
 
         print("playerLayer created")
         NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime,
@@ -197,7 +189,7 @@ class ShareViewController: UIViewController {
             
             UIView.animate(
                 withDuration: 0.2,
-                delay: 0.6,
+                delay: 0.4,
                 options: [.curveLinear,],
                 animations: {
                     self.savedLabel.alpha = 1
@@ -208,13 +200,13 @@ class ShareViewController: UIViewController {
                 delay: 0.2,
                 options: [.curveLinear, ],
                 animations: {
-                    self.downloadArrow.center = CGPoint(x: self.downloadArrow.center.x, y: self.downloadArrow.center.y+20)
+                    self.downloadArrow.center = CGPoint(x: self.downloadArrow.center.x, y: self.downloadArrow.center.y+25)
             })
             
             self.downloadArrow.center.y = self.downloadArrow.center.y
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
-                self.downloadArrow.center.y = self.downloadArrow.center.y-20
+                self.downloadArrow.center.y = self.downloadArrow.center.y-25
                 self.downloadBGView.isHidden = true
             }
             
@@ -256,6 +248,10 @@ class ShareViewController: UIViewController {
         }
     }
 
+    @IBAction func openLink(_ sender: Any) {
+        guard let url = URL(string: "https://www.s-j-zhang.com") else { return }
+        UIApplication.shared.open(url)
+    }
     
 
     
