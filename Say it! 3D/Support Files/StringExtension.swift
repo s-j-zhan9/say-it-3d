@@ -52,7 +52,7 @@ extension String {
     
     let attributes: [NSAttributedString.Key : Any] = [
         .paragraphStyle: paragraphStyle,
-        .font: UIFont(name: String(fontFace), size: CGFloat(fontSize)),
+        .font: UIFont(name: String(fontFace), size: CGFloat(fontSize)) as Any,
         .foregroundColor: fontColor
     ]
 

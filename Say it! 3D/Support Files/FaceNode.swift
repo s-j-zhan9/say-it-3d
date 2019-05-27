@@ -39,7 +39,6 @@ class FaceNode: SCNNode {
     var fontFace: String = "Avenir-Black"
     var fontColor: UIColor = .white
     var bgSize = CGSize(width: 480, height: 60)
-    //var bgContent: UIColor = .green
 
 
   

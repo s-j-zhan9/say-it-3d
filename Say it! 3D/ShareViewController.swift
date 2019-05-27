@@ -54,8 +54,9 @@ class ShareViewController: UIViewController {
 //        sharePanel.layer.shadowRadius = 2
         
         if videoUrl != nil {
-            print("printing url from shareview:\(String(describing: videoUrl))")}
-        loopVideo()
+            print("video url passed to shareview is:\(String(describing: videoUrl))")
+            loopVideo()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -81,7 +82,6 @@ class ShareViewController: UIViewController {
         playerLayer.shadowOffset = CGSize(width: 0, height: 1)
         playerLayer.shadowRadius = -4
 
-        print("playerLayer created")
         NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime,
                                                object: self.player!.currentItem,
                                                queue: nil) { [weak self] note in
@@ -100,7 +100,6 @@ class ShareViewController: UIViewController {
     
     
     @IBAction func handleIgButton(_ sender: Any) {
-        print("ig button clicked")
         
         let url = URL(string: "instagram-stories://share")!
         if UIApplication.shared.canOpenURL(url){
@@ -220,7 +219,7 @@ class ShareViewController: UIViewController {
     
     @IBAction func handleShareButton(_ sender: Any) {
         print("share button clicked")
-        self.checkAuthorizationAndPresentActivityController(toShare: videoUrl, using: self)
+        self.checkAuthorizationAndPresentActivityController(toShare: videoUrl as Any, using: self)
     }
     
     //Sharesheet & access to photo lib

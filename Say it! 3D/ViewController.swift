@@ -18,6 +18,8 @@ class ViewController: UIViewController{
     let features = ["nose", "leftEye", "rightEye", "mouth", "hat"]
     let featureIndices = [[9], [1064], [42], [24, 25], [20]]
     
+    var nodesCreated = false
+    
     var presetNum = 1
     
     @IBOutlet weak var fontButton: UIButton!
@@ -125,7 +127,6 @@ class ViewController: UIViewController{
 
     //hide textInputView on launch
     textInputView.isHidden = true
-    
     tutorialView.isHidden = true
 
     
@@ -156,10 +157,6 @@ class ViewController: UIViewController{
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
- 
-    
     
     //////////////////////////////////////////////////////
     ////////////////record functions start////////////////
@@ -383,8 +380,10 @@ class ViewController: UIViewController{
     }
     
     func updateNode(){
+        if (nodesCreated == true){
         let faceNode = sceneView.scene.rootNode.childNode(withName: "mouth", recursively: true) as! FaceNode
         faceNode.updateNewOptions(with: mouthOptions)
+        }
     }
     
     func setColor(newColor: UIColor!){
@@ -534,6 +533,7 @@ extension ViewController: ARSCNViewDelegate {
     
     
     updateFeatures(for: node, using: faceAnchor)
+    nodesCreated = true
     return node
   }
   

@@ -379,10 +379,11 @@
 			baseConfigurationReference = 41E49C6B8AAC480535CC16EB /* Pods-Say it! 3D.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4WWD59847Z;
 				INFOPLIST_FILE = "$(SRCROOT)/Say it! 3D/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sjzhang;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -396,10 +397,11 @@
 			baseConfigurationReference = 245CC670E86E7C31C17EA46B /* Pods-Say it! 3D.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4WWD59847Z;
 				INFOPLIST_FILE = "$(SRCROOT)/Say it! 3D/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sjzhang;
 				PRODUCT_NAME = "$(TARGET_NAME)";
