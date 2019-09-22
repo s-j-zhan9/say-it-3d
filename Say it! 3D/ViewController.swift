@@ -188,18 +188,21 @@ class ViewController: UIViewController{
 
     @objc func stop() {
         
-        //Record Button
-        self.progressTimer.invalidate()
-        progress = 0
-        
-        //Scene kit video recorder
-        self.recorder?.finishWriting().onSuccess { [weak self] url in
-            print("Recording Finished", url)
-            self?.videoUrl = url
-            self?.performSegue(withIdentifier: "toShare", sender: self)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+           //Record Button
+           self.progressTimer.invalidate()
+            self.progress = 0
+           
+           //Scene kit video recorder
+           self.recorder?.finishWriting().onSuccess { [weak self] url in
+               print("Recording Finished", url)
+               self?.videoUrl = url
+               self?.performSegue(withIdentifier: "toShare", sender: self)
 
+           }
+            
         }
-    
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -266,7 +269,7 @@ class ViewController: UIViewController{
         textTimer.invalidate()
         // Update new Node Options
         if messageField.text != "" {
-            mouthOptions = [messageField.text as! String]
+            mouthOptions = [messageField.text!]
             updateNode()
         }
         messageField.resignFirstResponder()

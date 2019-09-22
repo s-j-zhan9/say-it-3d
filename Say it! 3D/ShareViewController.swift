@@ -101,22 +101,46 @@ class ShareViewController: UIViewController {
     
     @IBAction func handleIgButton(_ sender: Any) {
         
-        let url = URL(string: "instagram-stories://share")!
-        if UIApplication.shared.canOpenURL(url){
-            
-            let backgroundData = NSData(contentsOf: videoUrl)
-            let pasteBoardItems = [
-                ["com.instagram.sharedSticker.backgroundVideo" : backgroundData]
-            ]
-            
-            if #available(iOS 10.0, *) {
-                
-                UIPasteboard.general.setItems(pasteBoardItems, options: [.expirationDate: Date().addingTimeInterval(60 * 5)])
-            } else {
-                UIPasteboard.general.items = pasteBoardItems
-            }
-            UIApplication.shared.openURL(url)
+let videoData = try? Data(contentsOf: videoUrl!)
+
+        guard let urlScheme = URL(string: "instagram-stories://share") else{
+            print("Failed")
+            return
+        }
+        
+        guard UIApplication.shared.canOpenURL(urlScheme) else {
+            print("Permission Issues")
+            return
+        }
+        
+        let pasteboardItems = [["com.instagram.sharedSticker.backgroundVideo": videoData!]]
+        let pasteboardOptions = [UIPasteboard.OptionsKey.expirationDate: Date().addingTimeInterval(60*5)]
+        
+        UIPasteboard.general.setItems(pasteboardItems, options: pasteboardOptions)
+        UIApplication.shared.open(urlScheme, options: [:], completionHandler: nil)
     }
+    
+    
+    func backgroundImage() {
+        // Verify app can open custom URL scheme, open if able
+        let backgroundData = NSData(contentsOf: videoUrl)
+
+
+        guard let urlScheme = URL(string: "instagram-stories://share"),
+            UIApplication.shared.canOpenURL(urlScheme) else {
+                // Handle older app versions or app not installed case
+
+                return
+        }
+                    
+
+        let pasteboardItems = [["com.instagram.sharedSticker.backgroundVideo" : backgroundData!]]
+        let pasteboardOptions: [UIPasteboard.OptionsKey: Any] = [.expirationDate: Date().addingTimeInterval(60 * 5)]
+
+        // This call is iOS 10+, can use 'setItems' depending on what versions you support
+        UIPasteboard.general.setItems(pasteboardItems, options: pasteboardOptions)
+
+        UIApplication.shared.open(urlScheme)
     }
     
     
