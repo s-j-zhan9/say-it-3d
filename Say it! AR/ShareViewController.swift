@@ -23,6 +23,7 @@ class ShareViewController: UIViewController {
     var playerLayer: AVPlayerLayer!
     var savedChecker: Bool = false
 
+
     @IBOutlet weak var closeButton: UIButton!
     @IBOutlet weak var sharePanel: UIView!
     @IBOutlet weak var playView: UIView!
@@ -35,6 +36,11 @@ class ShareViewController: UIViewController {
     //download button
     @IBOutlet weak var downloadArrow: UIImageView!
     @IBOutlet weak var savedLabel: UILabel!
+    
+    @IBAction func shareAppButtonTapped(_ sender: Any) {
+        guard let url = URL(string: "https://apps.apple.com/us/app/say-it-ar-expressions/id1480969165") else { return }
+        UIApplication.shared.open(url)
+    }
     
     
     
@@ -147,8 +153,9 @@ let videoData = try? Data(contentsOf: videoUrl!)
     @IBAction func handleSaveButton(_ sender: Any) {
         print("save button clicked")
         self.checkAuthorizationAndSaveToCameraRoll(toShare: videoUrl, using: self)
+        if(self.savedChecker == true){
         downloadFeedback()
-        
+        }
     }
     
     //save directly to camera roll
@@ -156,41 +163,43 @@ let videoData = try? Data(contentsOf: videoUrl!)
         switch PHPhotoLibrary.authorizationStatus() {
         case .authorized:
             self.savedChecker = true
+
             PHPhotoLibrary.shared().performChanges({
                 PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: data)
             }) { saved, error in
                 if saved {
-                    
                 }
             }
             
-            
         case .restricted, .denied:
             let libraryRestrictedAlert = UIAlertController(title: "Photos access denied",
-                                                           message: "Please enable Photos access for this application in Settings > Privacy to allow saving screenshots.",
+                                                           message: "Please enable Photos access for this application in Settings > Privacy to allow saving videos.",
                                                            preferredStyle: UIAlertController.Style.alert)
             libraryRestrictedAlert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
             presenter.present(libraryRestrictedAlert, animated: true, completion: nil)
         case .notDetermined:
             PHPhotoLibrary.requestAuthorization({ (authorizationStatus) in
                 if authorizationStatus == .authorized {
-                    let activityViewController = UIActivityViewController(activityItems: [data], applicationActivities: nil)
-                    activityViewController.excludedActivityTypes = [UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.openInIBooks, UIActivity.ActivityType.print]
-                    presenter.present(activityViewController, animated: true, completion: nil)
+                    self.savedChecker = true
+
+                    PHPhotoLibrary.shared().performChanges({
+                        PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: data)
+                    }) { saved, error in
+                        if saved {
+                        }
+                    }
+
                 }
             })
         }
+        
     }
     
     
     
     func downloadFeedback(){
-        
-        if(self.savedChecker == true){
-            
 
             self.downloadBGView.alpha = 0.0
-
             self.downloadBGView.isHidden = false
             self.savedLabel.alpha = 0
 
@@ -233,7 +242,7 @@ let videoData = try? Data(contentsOf: videoUrl!)
                 self.downloadBGView.isHidden = true
             }
             
-        }
+        
         //        let alertController = UIAlertController(title: "Saved to Photo", message: nil, preferredStyle: .alert)
         //        let defaultAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         //        alertController.addAction(defaultAction)
@@ -244,30 +253,35 @@ let videoData = try? Data(contentsOf: videoUrl!)
     @IBAction func handleShareButton(_ sender: Any) {
         print("share button clicked")
         self.checkAuthorizationAndPresentActivityController(toShare: videoUrl as Any, using: self)
+        
     }
     
     //Sharesheet & access to photo lib
     private func checkAuthorizationAndPresentActivityController(toShare data: Any, using presenter: UIViewController) {
+        var photoAccessAuthorized: Bool = false
+
         switch PHPhotoLibrary.authorizationStatus() {
         case .authorized:
-            let activityViewController = UIActivityViewController(activityItems: [data], applicationActivities: nil)
-            activityViewController.excludedActivityTypes = [UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.openInIBooks, UIActivity.ActivityType.print]
-            presenter.present(activityViewController, animated: true, completion: nil)
+            photoAccessAuthorized = true
+            
             
         case .restricted, .denied:
-            let libraryRestrictedAlert = UIAlertController(title: "Photos access denied",
-                                                           message: "Please enable Photos access for this application in Settings > Privacy to allow saving screenshots.",
-                                                           preferredStyle: UIAlertController.Style.alert)
-            libraryRestrictedAlert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
-            presenter.present(libraryRestrictedAlert, animated: true, completion: nil)
+           let libraryRestrictedAlert = UIAlertController(title: "Photos access denied",
+                                                          message: "Please enable Photos access for this application in Settings > Privacy to allow saving videos.",
+                                                          preferredStyle: UIAlertController.Style.alert)
+           libraryRestrictedAlert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+           presenter.present(libraryRestrictedAlert, animated: true, completion: nil)
         case .notDetermined:
             PHPhotoLibrary.requestAuthorization({ (authorizationStatus) in
                 if authorizationStatus == .authorized {
-                    let activityViewController = UIActivityViewController(activityItems: [data], applicationActivities: nil)
-                    activityViewController.excludedActivityTypes = [UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.openInIBooks, UIActivity.ActivityType.print]
-                    presenter.present(activityViewController, animated: true, completion: nil)
+                    photoAccessAuthorized = true
                 }
             })
+        }
+        if photoAccessAuthorized == true{
+            let activityViewController = UIActivityViewController(activityItems: [data], applicationActivities: nil)
+            activityViewController.excludedActivityTypes = [UIActivity.ActivityType.addToReadingList, UIActivity.ActivityType.openInIBooks, UIActivity.ActivityType.print]
+            presenter.present(activityViewController, animated: true, completion: nil)
         }
     }
 

@@ -31,11 +31,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Say it! 3D needs your cameras permission in order to track your face.</string>
+	<string>Say it! AR needs your cameras permission in order to track your face.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Say it! 3D needs your microphone permission to record video.</string>
+	<string>Say it! AR needs your microphone permission to record video.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Say it! 3D needs to access your photo.</string>
+	<string>Say it! AR needs to access your photo.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

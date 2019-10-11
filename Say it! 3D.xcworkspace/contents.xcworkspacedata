@@ -8,7 +8,7 @@
       location = "group:Objective-CBridgingHeader.h">
    </FileRef>
    <FileRef
-      location = "group:/Users/sj/Documents/ITP/2019 Mobile Lab/Say it/Say it-3d/Say it! AR.xcodeproj">
+      location = "group:Say it! AR.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

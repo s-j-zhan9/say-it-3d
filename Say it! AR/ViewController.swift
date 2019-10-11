@@ -188,7 +188,7 @@ class ViewController: UIViewController{
 
     @objc func stop() {
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
            //Record Button
            self.progressTimer.invalidate()
             self.progress = 0
